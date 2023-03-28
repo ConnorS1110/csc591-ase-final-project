@@ -167,7 +167,19 @@ def merge(col1, col2):
         new.hi = max(col1.hi, col2.hi)
     return new
 
-def xpln(data, best, rest):
+def xpln1(data, best, rest):
+    """
+    Function:
+        xpln1
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    """
     def v(has):
         return value(has, len(best.rows), len(rest.rows), "best")
     def score(ranges):

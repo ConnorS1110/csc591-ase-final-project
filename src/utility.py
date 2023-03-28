@@ -94,104 +94,6 @@ def eg(key, string, fun):
     egs[key] = fun
     help += f"  -g {key}    {string}"
 
-def oo():
-    pass
-
-def randFunc():
-    """
-    Function:
-        randFunc
-    Description:
-        Callback function to test the rand function
-    Input:
-        None
-    Output:
-        checks that 1000 random ints are unique from each other
-    """
-    global args
-    global Seed
-    Seed = 1
-    t = []
-    for i in range(1000):
-        t.append(rint(100))
-    Seed = 1
-    u = []
-    for i in range(1000):
-        u.append(rint(100))
-    Seed = 937162211
-    for index, value in enumerate(t):
-        if (value != u[index]):
-            return False
-    return True
-
-def someFunc():
-    """
-    Function:
-        someFunc
-    Description:
-        Callback function to test add function
-    Input:
-        None
-    Output:
-        10000 numbers are added without error
-    """
-    global args
-    args.Max = 32
-    num1 = NUM()
-    for i in range(10000):
-        add(num1, i)
-    args.Max = 512
-    # print(has(num1))
-
-def symFunc():
-    """
-    Function:
-        symFunc
-    Description:
-        Callback function to test SYM class
-    Input:
-        None
-    Output:
-        'a' is the median value in the array and that the div to 3 decimal points equals 1.38 as a boolean
-    """
-    sym = adds(SYM(), ["a","a","a","a","b","b","c"])
-    print(query.mid(sym), round(query.div(sym), 2))
-    return 1.38 == round(query.div(sym), 2)
-
-def numFunc():
-    """
-    Function:
-        numFunc
-    Description:
-        Callback function to test the NUM class
-    Input:
-        None
-    Output:
-        The midpoint of num1 of 0.5 and num1 has a greater midpoint than num2
-    """
-    num1, num2 = NUM(), NUM()
-    for i in range(10000):
-        add(num1, rand())
-    for i in range(10000):
-        add(num2, rand() ** 2)
-    print(1, round(query.mid(num1), 2), round(query.div(num1), 2))
-    print(2, round(query.mid(num2), 2), round(query.div(num2), 2))
-    return .5 == round(query.mid(num1), 1) and query.mid(num1)> query.mid(num2)
-
-def crashFunc():
-    """
-    Function:
-        crashFunc
-    Description:
-        Callback function to test crashes
-    Input:
-        None
-    Output:
-        an instance of NUM doesn't have the property 'some.missing.nested.field'
-    """
-    num = NUM()
-    return not hasattr(num, 'some.missing.nested.field')
-
 def getCliArgs():
     """
     Function:
@@ -222,26 +124,6 @@ def getCliArgs():
 
     args = parser.parse_args()
 
-def csvFunc():
-    """
-    Function:
-        csvFunc
-    Description:
-        Callback function to test readCSV() function
-    Input:
-        None
-    Output:
-        there are 8 * 399 elements in the default csv file in etc/data/auto93.csv
-    """
-    global n
-    def fun(t):
-        global n
-        n += len(t)
-    script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
-    readCSV(full_path, fun)
-    return n == 8 * 399
-
 def readCSV(sFilename, fun):
     """
     Function:
@@ -259,42 +141,6 @@ def readCSV(sFilename, fun):
         for line in csvFile:
             fun(line)
 
-def dataFunc():
-    """
-    Function:
-        dataFunc
-    Description:
-        Callback function to test DATA class
-    Input:
-        None
-    Output:
-        DATA instance is created and has correct property values when reading the default CSV file at etc/data/auto93.csv
-    """
-    script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
-    data = DATA(full_path)
-    col = data.cols.x[1].col
-    print(col.lo,col.hi, query.mid(col), query.div(col))
-    print(query.stats(data))
-
-def cloneFunc():
-    """
-    Function:
-        cloneFunc
-    Description:
-        Callback function to test clone function in DATA class
-    Input:
-        None
-    Output:
-        the cloned DATA object contains the same metadata as the original object
-    """
-    script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
-    data1 = DATA(full_path)
-    data2 = DATA(data1, data1.rows)
-    print(query.stats(data1))
-    print(query.stats(data2))
-
 def swayFunc():
     """
     Function:
@@ -309,7 +155,7 @@ def swayFunc():
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, args.file)
     data = DATA(full_path)
-    best, rest, _ = opt.sway(data)
+    best, rest, _ = opt.sway1(data)
     print("\nall ", query.stats(data))
     print("    ",   query.stats(data, query.div))
     print("\nbest", query.stats(best))
@@ -338,67 +184,6 @@ def halfFunc():
     l, r = DATA(data, left), DATA(data, right)
     print("l", query.stats(l))
     print("r", query.stats(r))
-
-def cliffsFunc():
-    """
-    Function:
-        cliffsFunc
-    Description:
-        Callback function to test cliffsDelta function
-    Input:
-        None
-    Output:
-        all cliffsDelta values are returned correctly
-    """
-    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [8, 7, 6, 2, 5, 8, 7, 3]) == False, "First cliff fails"
-    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [9, 9, 7, 8, 10, 9, 6]) == True, "Second cliff fails"
-    t1, t2 = [], []
-    for i in range(1000):
-        t1.append(rand())
-        t2.append(math.sqrt(rand()))
-    assert misc.cliffsDelta(t1, t1) == False, "Third cliff fails"
-    assert misc.cliffsDelta(t1, t2) == True, "Fourth cliff fails"
-    diff, j = False, 1.0
-    while not diff:
-        t3 = list(map(lambda x: x*j, t1))
-        diff = misc.cliffsDelta(t1, t3)
-        print(">", round(j, 4), diff)
-        j *= 1.025
-
-def distFunc():
-    """
-    Function:
-        distFunc
-    Description:
-        Callback function to test dist function
-    Input:
-        None
-    Output:
-        the dist values are correctly added to the NUM object
-    """
-    script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
-    data = DATA(full_path)
-    num  = NUM()
-    for row in data.rows:
-        add(num, query.dist(data, row, data.rows[0]))
-    print({"lo": num.lo, "hi": num.hi, "mid": round(query.mid(num)), "div": round(query.div(num))})
-
-def treeFunc():
-    """
-    Function:
-        treeFunc
-    Description:
-        Callback function to test tree and showTree functions
-    Input:
-        None
-    Output:
-        the tree data is correctly displayed
-    """
-    script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
-    data = DATA(full_path)
-    cluster.showTree(cluster.tree(data))
 
 def binsFunc():
     """
@@ -433,8 +218,8 @@ def explnFunc():
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, args.file)
     data = DATA(full_path)
-    best, rest, evals = opt.sway(data)
-    rule, _ = disc.xpln(data, best, rest)
+    best, rest, evals = opt.sway1(data)
+    rule, _ = disc.xpln1(data, best, rest)
     print("\n-----------\nexplain=", disc.showRule(rule))
     data1 = DATA(data, disc.selects(rule, data.rows))
     print("all                ", query.stats(data), query.stats(data, query.div))

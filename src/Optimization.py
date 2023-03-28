@@ -2,12 +2,12 @@ import utility as util
 from cluster import *
 import query as query
 
-def sway(data):
+def sway1(data):
     """
     Function:
-        sway
+        sway1
     Description:
-        Finds the best half of the data by recursion
+        Finds the best half of the data by recursion (Menzies)
     Input:
         data - data to sway
     Output:
