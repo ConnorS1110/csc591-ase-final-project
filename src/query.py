@@ -58,7 +58,7 @@ def div(col):
     else:
         return (per(has(col),.9) - per(has(col), .1)) / 2.58
 
-def stats(data, fun = None, cols = None, nPlaces = 2):
+def stats(data, fun = None, cols = None, nPlaces = 2, includeN = True):
     """
     Function:
         stats
@@ -77,7 +77,8 @@ def stats(data, fun = None, cols = None, nPlaces = 2):
         col = col.col
         return round((fun or mid)(col), nPlaces), col.txt
     tmp = kap(cols, callBack)
-    tmp["N"] = len(data.rows)
+    if includeN:
+        tmp["N"] = len(data.rows)
     return tmp
     # return tmp, map(mid, cols)
 

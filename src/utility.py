@@ -3,8 +3,6 @@ import csv
 import json
 import math
 import os
-from num import NUM
-from sym import SYM
 from data import DATA
 from update import *
 import query as query
@@ -228,3 +226,36 @@ def explnFunc():
     top, _ = query.betters(data, len(best.rows))
     top = DATA(data, top)
     print(f"sort with {len(data.rows)} evals", query.stats(top), query.stats(top, query.div))
+
+def table1():
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    row_headers = ["all", opt.sway1, disc.xpln1]
+    col_headers = []
+    for col in data.cols.y:
+        col_headers.append(col.col.txt)
+    table1_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
+    for row in row_headers:
+        table1_current_row_stats = {}
+        for i in range(1, 21):
+            # all option
+            if (isinstance(row, str) and row == "all"):
+                data = DATA(full_path)
+                if (not isinstance(row, str) and row.__name__ == "sway1"):
+                    row_func = row
+                    best, _, _ = row_func(data)
+                current_stats = query.stats(data, includeN = False)
+                if not table1_current_row_stats:
+                    # Initialize the dictionary with the first set of stats
+                    table1_current_row_stats = {key: value for key, value in current_stats.items()}
+                else:
+                    # Update the dictionary with the cumulative sum for each key
+                    for key, value in current_stats.items():
+                        table1_current_row_stats[key] += value
+                if i == 20:
+                    for key in table1_current_row_stats.keys():
+                        table1_current_row_stats[key] /= i
+                    table1_string += f"{row:>20}{''.join(f'{v:>14}' for v in table1_current_row_stats.values())}\n"
+
+    print(table1_string)

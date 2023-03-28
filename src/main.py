@@ -28,4 +28,6 @@ def main(funs):
     else: return 1
 
 if __name__ == "__main__":
-    main(utility.egs)
+    # main(utility.egs)
+    getCliArgs()
+    utility.table1()

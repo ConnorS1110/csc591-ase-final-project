@@ -1,9 +1,6 @@
 from utility import *
-import math
 import utility as util
 import list as listModule
-
-Seed = 937162211
 
 def itself(x):
     return x
