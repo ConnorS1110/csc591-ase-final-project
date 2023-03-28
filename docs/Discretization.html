@@ -195,7 +195,19 @@ def merge(col1, col2):
         new.hi = max(col1.hi, col2.hi)
     return new
 
-def xpln(data, best, rest):
+def xpln1(data, best, rest):
+    &#34;&#34;&#34;
+    Function:
+        xpln1
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    &#34;&#34;&#34;
     def v(has):
         return value(has, len(best.rows), len(rest.rows), &#34;best&#34;)
     def score(ranges):
@@ -655,16 +667,37 @@ are returned in a list.</p>
     return lst.kap(rule, merges)</code></pre>
 </details>
 </dd>
-<dt id="src.Discretization.xpln"><code class="name flex">
-<span>def <span class="ident">xpln</span></span>(<span>data, best, rest)</span>
+<dt id="src.Discretization.xpln1"><code class="name flex">
+<span>def <span class="ident">xpln1</span></span>(<span>data, best, rest)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><h2 id="function">Function</h2>
+<p>xpln1</p>
+<h2 id="description">Description</h2>
+<p>Finds a rule explanation of our optimized best/rest data (Menzies)</p>
+<h2 id="input">Input</h2>
+<p>data - data to explain
+best- best set of data
+rest - all swayed data not in best</p>
+<h2 id="output">Output</h2>
+<p>Rule explanation</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def xpln(data, best, rest):
+<pre><code class="python">def xpln1(data, best, rest):
+    &#34;&#34;&#34;
+    Function:
+        xpln1
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    &#34;&#34;&#34;
     def v(has):
         return value(has, len(best.rows), len(rest.rows), &#34;best&#34;)
     def score(ranges):
@@ -713,7 +746,7 @@ are returned in a list.</p>
 <li><code><a title="src.Discretization.mergeAny" href="#src.Discretization.mergeAny">mergeAny</a></code></li>
 <li><code><a title="src.Discretization.selects" href="#src.Discretization.selects">selects</a></code></li>
 <li><code><a title="src.Discretization.showRule" href="#src.Discretization.showRule">showRule</a></code></li>
-<li><code><a title="src.Discretization.xpln" href="#src.Discretization.xpln">xpln</a></code></li>
+<li><code><a title="src.Discretization.xpln1" href="#src.Discretization.xpln1">xpln1</a></code></li>
 </ul>
 </li>
 </ul>
