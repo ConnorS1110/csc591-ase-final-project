@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>src.utility API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.utility</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import argparse
+import csv
+import json
+import math
+import os
+from num import NUM
+from sym import SYM
+from data import DATA
+from update import *
+import query as query
+import miscellaneous as misc
+import cluster as cluster
+import Optimization as opt
+import Discretization as disc
+
+help = &#34;&#34;&#34;
+bins: multi-objective semi-supervised discetization
+(c) 2023 Tim Menzies &lt;timm@ieee.org&gt; BSD-2
+
+USAGE: lua bins.lua [OPTIONS] [-g ACTIONS]
+
+OPTIONS:
+  -b  --bins    initial number of bins       = 16
+  -c  --cliffs  cliff&#39;s delta threshold      = .147
+  -d  --d       different is over sd*d       = .35
+  -f  --file    data file                    = ../etc/data/auto93.csv
+  -F  --Far     distance to distant          = .95
+  -g  --go      start-up action              = all
+  -h  --help    show help                    = false
+  -H  --Halves  search space for clustering  = 512
+  -m  --min     size of smallest cluster     = .5
+  -M  --Max     numbers                      = 512
+  -p  --p       dist coefficient             = 2
+  -r  --rest    how many of rest to sample   = 4
+  -R  --Reuse   child splits reuse a parent pole = false
+  -s  --seed    random number seed           = 937162211
+&#34;&#34;&#34;
+
+args = None
+Seed = 937162211
+egs = {}
+n = 0
+
+def dofile(filename):
+    with open(filename) as f:
+        return json.load(f)
+
+def rint(lo = None, hi = None):
+    &#34;&#34;&#34;
+    Function:
+        rint
+    Description:
+        Makes a random number
+    Input:
+        low - low value
+        high - high value
+    Output:
+        Random number
+    &#34;&#34;&#34;
+    return math.floor(0.5 + rand(lo, hi))
+
+def rand(low = None, high = None):
+    &#34;&#34;&#34;
+    Function:
+        rand
+    Description:
+        Creates a random number
+    Input:
+        low - low value
+        high - high value
+    Output:
+        Random number
+    &#34;&#34;&#34;
+    global Seed
+    low, high = low or 0, high or 1
+    Seed = (16807 * Seed) % 2147483647
+    return low + (high - low) * Seed / 2147483647
+
+def eg(key, string, fun):
+    &#34;&#34;&#34;
+    Function:
+        eg
+    Description:
+        Creates an example test case and adds it to the dictionary of test cases. Appends the key/value to the actions of the help string
+    Input:
+        key - key of argument
+        string - value of argument as a string
+        fun - callback function to use for test case
+    Output:
+        None
+    &#34;&#34;&#34;
+    global egs
+    global help
+    egs[key] = fun
+    help += f&#34;  -g {key}    {string}&#34;
+
+def oo():
+    pass
+
+def randFunc():
+    &#34;&#34;&#34;
+    Function:
+        randFunc
+    Description:
+        Callback function to test the rand function
+    Input:
+        None
+    Output:
+        checks that 1000 random ints are unique from each other
+    &#34;&#34;&#34;
+    global args
+    global Seed
+    Seed = 1
+    t = []
+    for i in range(1000):
+        t.append(rint(100))
+    Seed = 1
+    u = []
+    for i in range(1000):
+        u.append(rint(100))
+    Seed = 937162211
+    for index, value in enumerate(t):
+        if (value != u[index]):
+            return False
+    return True
+
+def someFunc():
+    &#34;&#34;&#34;
+    Function:
+        someFunc
+    Description:
+        Callback function to test add function
+    Input:
+        None
+    Output:
+        10000 numbers are added without error
+    &#34;&#34;&#34;
+    global args
+    args.Max = 32
+    num1 = NUM()
+    for i in range(10000):
+        add(num1, i)
+    args.Max = 512
+    # print(has(num1))
+
+def symFunc():
+    &#34;&#34;&#34;
+    Function:
+        symFunc
+    Description:
+        Callback function to test SYM class
+    Input:
+        None
+    Output:
+        &#39;a&#39; is the median value in the array and that the div to 3 decimal points equals 1.38 as a boolean
+    &#34;&#34;&#34;
+    sym = adds(SYM(), [&#34;a&#34;,&#34;a&#34;,&#34;a&#34;,&#34;a&#34;,&#34;b&#34;,&#34;b&#34;,&#34;c&#34;])
+    print(query.mid(sym), round(query.div(sym), 2))
+    return 1.38 == round(query.div(sym), 2)
+
+def numFunc():
+    &#34;&#34;&#34;
+    Function:
+        numFunc
+    Description:
+        Callback function to test the NUM class
+    Input:
+        None
+    Output:
+        The midpoint of num1 of 0.5 and num1 has a greater midpoint than num2
+    &#34;&#34;&#34;
+    num1, num2 = NUM(), NUM()
+    for i in range(10000):
+        add(num1, rand())
+    for i in range(10000):
+        add(num2, rand() ** 2)
+    print(1, round(query.mid(num1), 2), round(query.div(num1), 2))
+    print(2, round(query.mid(num2), 2), round(query.div(num2), 2))
+    return .5 == round(query.mid(num1), 1) and query.mid(num1)&gt; query.mid(num2)
+
+def crashFunc():
+    &#34;&#34;&#34;
+    Function:
+        crashFunc
+    Description:
+        Callback function to test crashes
+    Input:
+        None
+    Output:
+        an instance of NUM doesn&#39;t have the property &#39;some.missing.nested.field&#39;
+    &#34;&#34;&#34;
+    num = NUM()
+    return not hasattr(num, &#39;some.missing.nested.field&#39;)
+
+def getCliArgs():
+    &#34;&#34;&#34;
+    Function:
+        getCliArgs
+    Description:
+        Parses out the arguments entered or returns an error if incorrect syntax is used
+    Input:
+        None
+    Output:
+        None
+    &#34;&#34;&#34;
+    global args
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument(&#34;-b&#34;, &#34;--bins&#34;, type=int, default=16, required=False, help=&#34;initial number of bins&#34;)
+    parser.add_argument(&#34;-d&#34;, &#34;--d&#34;, type=float, default=0.35, required=False, help=&#34;different is over sd*d&#34;)
+    parser.add_argument(&#34;-g&#34;, &#34;--go&#34;, type=str, default=&#34;all&#34;, required=False, help=&#34;start-up action&#34;)
+    parser.add_argument(&#34;-h&#34;, &#34;--help&#34;, action=&#39;store_true&#39;, help=&#34;show help&#34;)
+    parser.add_argument(&#34;-s&#34;, &#34;--seed&#34;, type=int, default=937162211, required=False, help=&#34;random number seed&#34;)
+    parser.add_argument(&#34;-f&#34;, &#34;--file&#34;, type=str, default=&#34;../etc/data/auto93.csv&#34;, required=False, help=&#34;data file&#34;)
+    parser.add_argument(&#34;-p&#34;, &#34;--p&#34;, type=int, default=2, required=False, help=&#34;distance coefficient&#34;)
+    parser.add_argument(&#34;-c&#34;, &#34;--cliffs&#34;, type=float, default=0.147, required=False, help=&#34;cliff&#39;s delta threshold&#34;)
+    parser.add_argument(&#34;-F&#34;, &#34;--Far&#34;, type=float, default=0.95, required=False, help=&#34;distance to distant&#34;)
+    parser.add_argument(&#34;-H&#34;, &#34;--Halves&#34;, type=int, default=512, required=False, help=&#34;search space for clustering&#34;)
+    parser.add_argument(&#34;-m&#34;, &#34;--min&#34;, type=float, default=0.5, required=False, help=&#34;size of smallest cluster&#34;)
+    parser.add_argument(&#34;-M&#34;, &#34;--Max&#34;, type=int, default=512, required=False, help=&#34;numbers&#34;)
+    parser.add_argument(&#34;-r&#34;, &#34;--rest&#34;, type=int, default=4, required=False, help=&#34;how many of rest to sample&#34;)
+    parser.add_argument(&#34;-R&#34;, &#34;--Reuse&#34;, type=bool, default=False, required=False, help=&#34;child splits reuse a parent pole&#34;)
+
+    args = parser.parse_args()
+
+def csvFunc():
+    &#34;&#34;&#34;
+    Function:
+        csvFunc
+    Description:
+        Callback function to test readCSV() function
+    Input:
+        None
+    Output:
+        there are 8 * 399 elements in the default csv file in etc/data/auto93.csv
+    &#34;&#34;&#34;
+    global n
+    def fun(t):
+        global n
+        n += len(t)
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    readCSV(full_path, fun)
+    return n == 8 * 399
+
+def readCSV(sFilename, fun):
+    &#34;&#34;&#34;
+    Function:
+        readCSV
+    Description:
+        reads a CSV and runs a callback function on every line
+    Input:
+        sFilename - path of CSV file to be read
+        fun - callback function to be called for each line in the CSV
+    Output:
+        None
+    &#34;&#34;&#34;
+    with open(sFilename, mode=&#39;r&#39;) as file:
+        csvFile = csv.reader(file)
+        for line in csvFile:
+            fun(line)
+
+def dataFunc():
+    &#34;&#34;&#34;
+    Function:
+        dataFunc
+    Description:
+        Callback function to test DATA class
+    Input:
+        None
+    Output:
+        DATA instance is created and has correct property values when reading the default CSV file at etc/data/auto93.csv
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    col = data.cols.x[1].col
+    print(col.lo,col.hi, query.mid(col), query.div(col))
+    print(query.stats(data))
+
+def cloneFunc():
+    &#34;&#34;&#34;
+    Function:
+        cloneFunc
+    Description:
+        Callback function to test clone function in DATA class
+    Input:
+        None
+    Output:
+        the cloned DATA object contains the same metadata as the original object
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data1 = DATA(full_path)
+    data2 = DATA(data1, data1.rows)
+    print(query.stats(data1))
+    print(query.stats(data2))
+
+def swayFunc():
+    &#34;&#34;&#34;
+    Function:
+        swayFunc
+    Description:
+        Callback function to test sway function in DATA class
+    Input:
+        None
+    Output:
+        the correct data is output from the sway function
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, _ = opt.sway(data)
+    print(&#34;\nall &#34;, query.stats(data))
+    print(&#34;    &#34;,   query.stats(data, query.div))
+    print(&#34;\nbest&#34;, query.stats(best))
+    print(&#34;    &#34;,   query.stats(best, query.div))
+    print(&#34;\nrest&#34;, query.stats(rest))
+    print(&#34;    &#34;,   query.stats(rest, query.div))
+    print(&#34;\nall ~= best?&#34;, misc.diffs(best.cols.y, data.cols.y))
+    print(&#34;best ~= rest?&#34;, misc.diffs(best.cols.y, rest.cols.y))
+
+def halfFunc():
+    &#34;&#34;&#34;
+    Function:
+        halfFunc
+    Description:
+        Callback function to test half function in DATA class
+    Input:
+        None
+    Output:
+        the DATA object is correctly split in half
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    left, right, A, B, c, _ = cluster.half(data)
+    print(len(left), len(right))
+    l, r = DATA(data, left), DATA(data, right)
+    print(&#34;l&#34;, query.stats(l))
+    print(&#34;r&#34;, query.stats(r))
+
+def cliffsFunc():
+    &#34;&#34;&#34;
+    Function:
+        cliffsFunc
+    Description:
+        Callback function to test cliffsDelta function
+    Input:
+        None
+    Output:
+        all cliffsDelta values are returned correctly
+    &#34;&#34;&#34;
+    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [8, 7, 6, 2, 5, 8, 7, 3]) == False, &#34;First cliff fails&#34;
+    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [9, 9, 7, 8, 10, 9, 6]) == True, &#34;Second cliff fails&#34;
+    t1, t2 = [], []
+    for i in range(1000):
+        t1.append(rand())
+        t2.append(math.sqrt(rand()))
+    assert misc.cliffsDelta(t1, t1) == False, &#34;Third cliff fails&#34;
+    assert misc.cliffsDelta(t1, t2) == True, &#34;Fourth cliff fails&#34;
+    diff, j = False, 1.0
+    while not diff:
+        t3 = list(map(lambda x: x*j, t1))
+        diff = misc.cliffsDelta(t1, t3)
+        print(&#34;&gt;&#34;, round(j, 4), diff)
+        j *= 1.025
+
+def distFunc():
+    &#34;&#34;&#34;
+    Function:
+        distFunc
+    Description:
+        Callback function to test dist function
+    Input:
+        None
+    Output:
+        the dist values are correctly added to the NUM object
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    num  = NUM()
+    for row in data.rows:
+        add(num, query.dist(data, row, data.rows[0]))
+    print({&#34;lo&#34;: num.lo, &#34;hi&#34;: num.hi, &#34;mid&#34;: round(query.mid(num)), &#34;div&#34;: round(query.div(num))})
+
+def treeFunc():
+    &#34;&#34;&#34;
+    Function:
+        treeFunc
+    Description:
+        Callback function to test tree and showTree functions
+    Input:
+        None
+    Output:
+        the tree data is correctly displayed
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    cluster.showTree(cluster.tree(data))
+
+def binsFunc():
+    &#34;&#34;&#34;
+    Function:
+        binsFunc
+    Description:
+        Callback function to test bins function
+    Input:
+        None
+    Output:
+        the bins are correctly printed
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, _ = opt.sway(data)
+    b4 = None
+    print(&#34;all&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;, &#34;{best= &#34; + str(len(best.rows)) + &#34;, rest= &#34; + str(len(rest.rows)) + &#34;}&#34;)
+    result = disc.bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows})
+    for t in result:
+        for range in t:
+            if range.txt != b4:
+                print(&#34;&#34;)
+            b4 = range.txt
+            print(range.txt,
+                  range.lo,
+                  range.hi,
+                  round(query.value(range.y.has, len(best.rows), len(rest.rows), &#34;best&#34;)),
+                  range.y.has)
+
+def explnFunc():
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, evals = opt.sway(data)
+    rule, _ = disc.xpln(data, best, rest)
+    print(&#34;\n-----------\nexplain=&#34;, disc.showRule(rule))
+    data1 = DATA(data, disc.selects(rule, data.rows))
+    print(&#34;all                &#34;, query.stats(data), query.stats(data, query.div))
+    print(f&#34;sway with   {evals} evals&#34;, query.stats(best), query.stats(best, query.div))
+    print(f&#34;xpln on     {evals} evals&#34;, query.stats(data1), query.stats(data1, query.div))
+    top, _ = query.betters(data, len(best.rows))
+    top = DATA(data, top)
+    print(f&#34;sort with {len(data.rows)} evals&#34;, query.stats(top), query.stats(top, query.div))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.utility.binsFunc"><code class="name flex">
+<span>def <span class="ident">binsFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>binsFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test bins function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the bins are correctly printed</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def binsFunc():
+    &#34;&#34;&#34;
+    Function:
+        binsFunc
+    Description:
+        Callback function to test bins function
+    Input:
+        None
+    Output:
+        the bins are correctly printed
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, _ = opt.sway(data)
+    b4 = None
+    print(&#34;all&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;, &#34;{best= &#34; + str(len(best.rows)) + &#34;, rest= &#34; + str(len(rest.rows)) + &#34;}&#34;)
+    result = disc.bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows})
+    for t in result:
+        for range in t:
+            if range.txt != b4:
+                print(&#34;&#34;)
+            b4 = range.txt
+            print(range.txt,
+                  range.lo,
+                  range.hi,
+                  round(query.value(range.y.has, len(best.rows), len(rest.rows), &#34;best&#34;)),
+                  range.y.has)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.cliffsFunc"><code class="name flex">
+<span>def <span class="ident">cliffsFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>cliffsFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test cliffsDelta function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>all cliffsDelta values are returned correctly</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cliffsFunc():
+    &#34;&#34;&#34;
+    Function:
+        cliffsFunc
+    Description:
+        Callback function to test cliffsDelta function
+    Input:
+        None
+    Output:
+        all cliffsDelta values are returned correctly
+    &#34;&#34;&#34;
+    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [8, 7, 6, 2, 5, 8, 7, 3]) == False, &#34;First cliff fails&#34;
+    assert misc.cliffsDelta([8, 7, 6, 2, 5, 8, 7, 3], [9, 9, 7, 8, 10, 9, 6]) == True, &#34;Second cliff fails&#34;
+    t1, t2 = [], []
+    for i in range(1000):
+        t1.append(rand())
+        t2.append(math.sqrt(rand()))
+    assert misc.cliffsDelta(t1, t1) == False, &#34;Third cliff fails&#34;
+    assert misc.cliffsDelta(t1, t2) == True, &#34;Fourth cliff fails&#34;
+    diff, j = False, 1.0
+    while not diff:
+        t3 = list(map(lambda x: x*j, t1))
+        diff = misc.cliffsDelta(t1, t3)
+        print(&#34;&gt;&#34;, round(j, 4), diff)
+        j *= 1.025</code></pre>
+</details>
+</dd>
+<dt id="src.utility.cloneFunc"><code class="name flex">
+<span>def <span class="ident">cloneFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>cloneFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test clone function in DATA class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the cloned DATA object contains the same metadata as the original object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cloneFunc():
+    &#34;&#34;&#34;
+    Function:
+        cloneFunc
+    Description:
+        Callback function to test clone function in DATA class
+    Input:
+        None
+    Output:
+        the cloned DATA object contains the same metadata as the original object
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data1 = DATA(full_path)
+    data2 = DATA(data1, data1.rows)
+    print(query.stats(data1))
+    print(query.stats(data2))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.crashFunc"><code class="name flex">
+<span>def <span class="ident">crashFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>crashFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test crashes</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>an instance of NUM doesn't have the property 'some.missing.nested.field'</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def crashFunc():
+    &#34;&#34;&#34;
+    Function:
+        crashFunc
+    Description:
+        Callback function to test crashes
+    Input:
+        None
+    Output:
+        an instance of NUM doesn&#39;t have the property &#39;some.missing.nested.field&#39;
+    &#34;&#34;&#34;
+    num = NUM()
+    return not hasattr(num, &#39;some.missing.nested.field&#39;)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.csvFunc"><code class="name flex">
+<span>def <span class="ident">csvFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>csvFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test readCSV() function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>there are 8 * 399 elements in the default csv file in etc/data/auto93.csv</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def csvFunc():
+    &#34;&#34;&#34;
+    Function:
+        csvFunc
+    Description:
+        Callback function to test readCSV() function
+    Input:
+        None
+    Output:
+        there are 8 * 399 elements in the default csv file in etc/data/auto93.csv
+    &#34;&#34;&#34;
+    global n
+    def fun(t):
+        global n
+        n += len(t)
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    readCSV(full_path, fun)
+    return n == 8 * 399</code></pre>
+</details>
+</dd>
+<dt id="src.utility.dataFunc"><code class="name flex">
+<span>def <span class="ident">dataFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>dataFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test DATA class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>DATA instance is created and has correct property values when reading the default CSV file at etc/data/auto93.csv</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dataFunc():
+    &#34;&#34;&#34;
+    Function:
+        dataFunc
+    Description:
+        Callback function to test DATA class
+    Input:
+        None
+    Output:
+        DATA instance is created and has correct property values when reading the default CSV file at etc/data/auto93.csv
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    col = data.cols.x[1].col
+    print(col.lo,col.hi, query.mid(col), query.div(col))
+    print(query.stats(data))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.distFunc"><code class="name flex">
+<span>def <span class="ident">distFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>distFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test dist function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the dist values are correctly added to the NUM object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def distFunc():
+    &#34;&#34;&#34;
+    Function:
+        distFunc
+    Description:
+        Callback function to test dist function
+    Input:
+        None
+    Output:
+        the dist values are correctly added to the NUM object
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    num  = NUM()
+    for row in data.rows:
+        add(num, query.dist(data, row, data.rows[0]))
+    print({&#34;lo&#34;: num.lo, &#34;hi&#34;: num.hi, &#34;mid&#34;: round(query.mid(num)), &#34;div&#34;: round(query.div(num))})</code></pre>
+</details>
+</dd>
+<dt id="src.utility.dofile"><code class="name flex">
+<span>def <span class="ident">dofile</span></span>(<span>filename)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dofile(filename):
+    with open(filename) as f:
+        return json.load(f)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.eg"><code class="name flex">
+<span>def <span class="ident">eg</span></span>(<span>key, string, fun)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>eg</p>
+<h2 id="description">Description</h2>
+<p>Creates an example test case and adds it to the dictionary of test cases. Appends the key/value to the actions of the help string</p>
+<h2 id="input">Input</h2>
+<p>key - key of argument
+string - value of argument as a string
+fun - callback function to use for test case</p>
+<h2 id="output">Output</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def eg(key, string, fun):
+    &#34;&#34;&#34;
+    Function:
+        eg
+    Description:
+        Creates an example test case and adds it to the dictionary of test cases. Appends the key/value to the actions of the help string
+    Input:
+        key - key of argument
+        string - value of argument as a string
+        fun - callback function to use for test case
+    Output:
+        None
+    &#34;&#34;&#34;
+    global egs
+    global help
+    egs[key] = fun
+    help += f&#34;  -g {key}    {string}&#34;</code></pre>
+</details>
+</dd>
+<dt id="src.utility.explnFunc"><code class="name flex">
+<span>def <span class="ident">explnFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def explnFunc():
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, evals = opt.sway(data)
+    rule, _ = disc.xpln(data, best, rest)
+    print(&#34;\n-----------\nexplain=&#34;, disc.showRule(rule))
+    data1 = DATA(data, disc.selects(rule, data.rows))
+    print(&#34;all                &#34;, query.stats(data), query.stats(data, query.div))
+    print(f&#34;sway with   {evals} evals&#34;, query.stats(best), query.stats(best, query.div))
+    print(f&#34;xpln on     {evals} evals&#34;, query.stats(data1), query.stats(data1, query.div))
+    top, _ = query.betters(data, len(best.rows))
+    top = DATA(data, top)
+    print(f&#34;sort with {len(data.rows)} evals&#34;, query.stats(top), query.stats(top, query.div))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.getCliArgs"><code class="name flex">
+<span>def <span class="ident">getCliArgs</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>getCliArgs</p>
+<h2 id="description">Description</h2>
+<p>Parses out the arguments entered or returns an error if incorrect syntax is used</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getCliArgs():
+    &#34;&#34;&#34;
+    Function:
+        getCliArgs
+    Description:
+        Parses out the arguments entered or returns an error if incorrect syntax is used
+    Input:
+        None
+    Output:
+        None
+    &#34;&#34;&#34;
+    global args
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument(&#34;-b&#34;, &#34;--bins&#34;, type=int, default=16, required=False, help=&#34;initial number of bins&#34;)
+    parser.add_argument(&#34;-d&#34;, &#34;--d&#34;, type=float, default=0.35, required=False, help=&#34;different is over sd*d&#34;)
+    parser.add_argument(&#34;-g&#34;, &#34;--go&#34;, type=str, default=&#34;all&#34;, required=False, help=&#34;start-up action&#34;)
+    parser.add_argument(&#34;-h&#34;, &#34;--help&#34;, action=&#39;store_true&#39;, help=&#34;show help&#34;)
+    parser.add_argument(&#34;-s&#34;, &#34;--seed&#34;, type=int, default=937162211, required=False, help=&#34;random number seed&#34;)
+    parser.add_argument(&#34;-f&#34;, &#34;--file&#34;, type=str, default=&#34;../etc/data/auto93.csv&#34;, required=False, help=&#34;data file&#34;)
+    parser.add_argument(&#34;-p&#34;, &#34;--p&#34;, type=int, default=2, required=False, help=&#34;distance coefficient&#34;)
+    parser.add_argument(&#34;-c&#34;, &#34;--cliffs&#34;, type=float, default=0.147, required=False, help=&#34;cliff&#39;s delta threshold&#34;)
+    parser.add_argument(&#34;-F&#34;, &#34;--Far&#34;, type=float, default=0.95, required=False, help=&#34;distance to distant&#34;)
+    parser.add_argument(&#34;-H&#34;, &#34;--Halves&#34;, type=int, default=512, required=False, help=&#34;search space for clustering&#34;)
+    parser.add_argument(&#34;-m&#34;, &#34;--min&#34;, type=float, default=0.5, required=False, help=&#34;size of smallest cluster&#34;)
+    parser.add_argument(&#34;-M&#34;, &#34;--Max&#34;, type=int, default=512, required=False, help=&#34;numbers&#34;)
+    parser.add_argument(&#34;-r&#34;, &#34;--rest&#34;, type=int, default=4, required=False, help=&#34;how many of rest to sample&#34;)
+    parser.add_argument(&#34;-R&#34;, &#34;--Reuse&#34;, type=bool, default=False, required=False, help=&#34;child splits reuse a parent pole&#34;)
+
+    args = parser.parse_args()</code></pre>
+</details>
+</dd>
+<dt id="src.utility.halfFunc"><code class="name flex">
+<span>def <span class="ident">halfFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>halfFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test half function in DATA class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the DATA object is correctly split in half</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def halfFunc():
+    &#34;&#34;&#34;
+    Function:
+        halfFunc
+    Description:
+        Callback function to test half function in DATA class
+    Input:
+        None
+    Output:
+        the DATA object is correctly split in half
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    left, right, A, B, c, _ = cluster.half(data)
+    print(len(left), len(right))
+    l, r = DATA(data, left), DATA(data, right)
+    print(&#34;l&#34;, query.stats(l))
+    print(&#34;r&#34;, query.stats(r))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.numFunc"><code class="name flex">
+<span>def <span class="ident">numFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>numFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test the NUM class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>The midpoint of num1 of 0.5 and num1 has a greater midpoint than num2</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def numFunc():
+    &#34;&#34;&#34;
+    Function:
+        numFunc
+    Description:
+        Callback function to test the NUM class
+    Input:
+        None
+    Output:
+        The midpoint of num1 of 0.5 and num1 has a greater midpoint than num2
+    &#34;&#34;&#34;
+    num1, num2 = NUM(), NUM()
+    for i in range(10000):
+        add(num1, rand())
+    for i in range(10000):
+        add(num2, rand() ** 2)
+    print(1, round(query.mid(num1), 2), round(query.div(num1), 2))
+    print(2, round(query.mid(num2), 2), round(query.div(num2), 2))
+    return .5 == round(query.mid(num1), 1) and query.mid(num1)&gt; query.mid(num2)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.oo"><code class="name flex">
+<span>def <span class="ident">oo</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def oo():
+    pass</code></pre>
+</details>
+</dd>
+<dt id="src.utility.rand"><code class="name flex">
+<span>def <span class="ident">rand</span></span>(<span>low=None, high=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>rand</p>
+<h2 id="description">Description</h2>
+<p>Creates a random number</p>
+<h2 id="input">Input</h2>
+<p>low - low value
+high - high value</p>
+<h2 id="output">Output</h2>
+<p>Random number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rand(low = None, high = None):
+    &#34;&#34;&#34;
+    Function:
+        rand
+    Description:
+        Creates a random number
+    Input:
+        low - low value
+        high - high value
+    Output:
+        Random number
+    &#34;&#34;&#34;
+    global Seed
+    low, high = low or 0, high or 1
+    Seed = (16807 * Seed) % 2147483647
+    return low + (high - low) * Seed / 2147483647</code></pre>
+</details>
+</dd>
+<dt id="src.utility.randFunc"><code class="name flex">
+<span>def <span class="ident">randFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>randFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test the rand function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>checks that 1000 random ints are unique from each other</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def randFunc():
+    &#34;&#34;&#34;
+    Function:
+        randFunc
+    Description:
+        Callback function to test the rand function
+    Input:
+        None
+    Output:
+        checks that 1000 random ints are unique from each other
+    &#34;&#34;&#34;
+    global args
+    global Seed
+    Seed = 1
+    t = []
+    for i in range(1000):
+        t.append(rint(100))
+    Seed = 1
+    u = []
+    for i in range(1000):
+        u.append(rint(100))
+    Seed = 937162211
+    for index, value in enumerate(t):
+        if (value != u[index]):
+            return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="src.utility.readCSV"><code class="name flex">
+<span>def <span class="ident">readCSV</span></span>(<span>sFilename, fun)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>readCSV</p>
+<h2 id="description">Description</h2>
+<p>reads a CSV and runs a callback function on every line</p>
+<h2 id="input">Input</h2>
+<p>sFilename - path of CSV file to be read
+fun - callback function to be called for each line in the CSV</p>
+<h2 id="output">Output</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def readCSV(sFilename, fun):
+    &#34;&#34;&#34;
+    Function:
+        readCSV
+    Description:
+        reads a CSV and runs a callback function on every line
+    Input:
+        sFilename - path of CSV file to be read
+        fun - callback function to be called for each line in the CSV
+    Output:
+        None
+    &#34;&#34;&#34;
+    with open(sFilename, mode=&#39;r&#39;) as file:
+        csvFile = csv.reader(file)
+        for line in csvFile:
+            fun(line)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.rint"><code class="name flex">
+<span>def <span class="ident">rint</span></span>(<span>lo=None, hi=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>rint</p>
+<h2 id="description">Description</h2>
+<p>Makes a random number</p>
+<h2 id="input">Input</h2>
+<p>low - low value
+high - high value</p>
+<h2 id="output">Output</h2>
+<p>Random number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rint(lo = None, hi = None):
+    &#34;&#34;&#34;
+    Function:
+        rint
+    Description:
+        Makes a random number
+    Input:
+        low - low value
+        high - high value
+    Output:
+        Random number
+    &#34;&#34;&#34;
+    return math.floor(0.5 + rand(lo, hi))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.someFunc"><code class="name flex">
+<span>def <span class="ident">someFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>someFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test add function</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>10000 numbers are added without error</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def someFunc():
+    &#34;&#34;&#34;
+    Function:
+        someFunc
+    Description:
+        Callback function to test add function
+    Input:
+        None
+    Output:
+        10000 numbers are added without error
+    &#34;&#34;&#34;
+    global args
+    args.Max = 32
+    num1 = NUM()
+    for i in range(10000):
+        add(num1, i)
+    args.Max = 512
+    # print(has(num1))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.swayFunc"><code class="name flex">
+<span>def <span class="ident">swayFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>swayFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test sway function in DATA class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the correct data is output from the sway function</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def swayFunc():
+    &#34;&#34;&#34;
+    Function:
+        swayFunc
+    Description:
+        Callback function to test sway function in DATA class
+    Input:
+        None
+    Output:
+        the correct data is output from the sway function
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    best, rest, _ = opt.sway(data)
+    print(&#34;\nall &#34;, query.stats(data))
+    print(&#34;    &#34;,   query.stats(data, query.div))
+    print(&#34;\nbest&#34;, query.stats(best))
+    print(&#34;    &#34;,   query.stats(best, query.div))
+    print(&#34;\nrest&#34;, query.stats(rest))
+    print(&#34;    &#34;,   query.stats(rest, query.div))
+    print(&#34;\nall ~= best?&#34;, misc.diffs(best.cols.y, data.cols.y))
+    print(&#34;best ~= rest?&#34;, misc.diffs(best.cols.y, rest.cols.y))</code></pre>
+</details>
+</dd>
+<dt id="src.utility.symFunc"><code class="name flex">
+<span>def <span class="ident">symFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>symFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test SYM class</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>'a' is the median value in the array and that the div to 3 decimal points equals 1.38 as a boolean</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def symFunc():
+    &#34;&#34;&#34;
+    Function:
+        symFunc
+    Description:
+        Callback function to test SYM class
+    Input:
+        None
+    Output:
+        &#39;a&#39; is the median value in the array and that the div to 3 decimal points equals 1.38 as a boolean
+    &#34;&#34;&#34;
+    sym = adds(SYM(), [&#34;a&#34;,&#34;a&#34;,&#34;a&#34;,&#34;a&#34;,&#34;b&#34;,&#34;b&#34;,&#34;c&#34;])
+    print(query.mid(sym), round(query.div(sym), 2))
+    return 1.38 == round(query.div(sym), 2)</code></pre>
+</details>
+</dd>
+<dt id="src.utility.treeFunc"><code class="name flex">
+<span>def <span class="ident">treeFunc</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>treeFunc</p>
+<h2 id="description">Description</h2>
+<p>Callback function to test tree and showTree functions</p>
+<h2 id="input">Input</h2>
+<p>None</p>
+<h2 id="output">Output</h2>
+<p>the tree data is correctly displayed</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def treeFunc():
+    &#34;&#34;&#34;
+    Function:
+        treeFunc
+    Description:
+        Callback function to test tree and showTree functions
+    Input:
+        None
+    Output:
+        the tree data is correctly displayed
+    &#34;&#34;&#34;
+    script_dir = os.path.dirname(__file__)
+    full_path = os.path.join(script_dir, args.file)
+    data = DATA(full_path)
+    cluster.showTree(cluster.tree(data))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src" href="index.html">src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="src.utility.binsFunc" href="#src.utility.binsFunc">binsFunc</a></code></li>
+<li><code><a title="src.utility.cliffsFunc" href="#src.utility.cliffsFunc">cliffsFunc</a></code></li>
+<li><code><a title="src.utility.cloneFunc" href="#src.utility.cloneFunc">cloneFunc</a></code></li>
+<li><code><a title="src.utility.crashFunc" href="#src.utility.crashFunc">crashFunc</a></code></li>
+<li><code><a title="src.utility.csvFunc" href="#src.utility.csvFunc">csvFunc</a></code></li>
+<li><code><a title="src.utility.dataFunc" href="#src.utility.dataFunc">dataFunc</a></code></li>
+<li><code><a title="src.utility.distFunc" href="#src.utility.distFunc">distFunc</a></code></li>
+<li><code><a title="src.utility.dofile" href="#src.utility.dofile">dofile</a></code></li>
+<li><code><a title="src.utility.eg" href="#src.utility.eg">eg</a></code></li>
+<li><code><a title="src.utility.explnFunc" href="#src.utility.explnFunc">explnFunc</a></code></li>
+<li><code><a title="src.utility.getCliArgs" href="#src.utility.getCliArgs">getCliArgs</a></code></li>
+<li><code><a title="src.utility.halfFunc" href="#src.utility.halfFunc">halfFunc</a></code></li>
+<li><code><a title="src.utility.numFunc" href="#src.utility.numFunc">numFunc</a></code></li>
+<li><code><a title="src.utility.oo" href="#src.utility.oo">oo</a></code></li>
+<li><code><a title="src.utility.rand" href="#src.utility.rand">rand</a></code></li>
+<li><code><a title="src.utility.randFunc" href="#src.utility.randFunc">randFunc</a></code></li>
+<li><code><a title="src.utility.readCSV" href="#src.utility.readCSV">readCSV</a></code></li>
+<li><code><a title="src.utility.rint" href="#src.utility.rint">rint</a></code></li>
+<li><code><a title="src.utility.someFunc" href="#src.utility.someFunc">someFunc</a></code></li>
+<li><code><a title="src.utility.swayFunc" href="#src.utility.swayFunc">swayFunc</a></code></li>
+<li><code><a title="src.utility.symFunc" href="#src.utility.symFunc">symFunc</a></code></li>
+<li><code><a title="src.utility.treeFunc" href="#src.utility.treeFunc">treeFunc</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
