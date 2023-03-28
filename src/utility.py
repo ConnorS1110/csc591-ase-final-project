@@ -199,7 +199,7 @@ def binsFunc():
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, args.file)
     data = DATA(full_path)
-    best, rest, _ = opt.sway(data)
+    best, rest, _ = opt.sway1(data)
     b4 = None
     print("all","","","", "{best= " + str(len(best.rows)) + ", rest= " + str(len(rest.rows)) + "}")
     result = disc.bins(data.cols.x, {"best": best.rows, "rest": rest.rows})
