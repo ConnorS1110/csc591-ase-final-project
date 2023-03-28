@@ -227,7 +227,7 @@ def binsFunc():
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, args.file)
     data = DATA(full_path)
-    best, rest, _ = opt.sway(data)
+    best, rest, _ = opt.sway1(data)
     b4 = None
     print(&#34;all&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;, &#34;{best= &#34; + str(len(best.rows)) + &#34;, rest= &#34; + str(len(rest.rows)) + &#34;}&#34;)
     result = disc.bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows})
@@ -295,7 +295,7 @@ def explnFunc():
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, args.file)
     data = DATA(full_path)
-    best, rest, _ = opt.sway(data)
+    best, rest, _ = opt.sway1(data)
     b4 = None
     print(&#34;all&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;, &#34;{best= &#34; + str(len(best.rows)) + &#34;, rest= &#34; + str(len(rest.rows)) + &#34;}&#34;)
     result = disc.bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows})
