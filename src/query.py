@@ -33,7 +33,7 @@ def mid(col):
     Output:
         col.mode if col col has isSym and is true, otherwise return the middle value in col
     """
-    return col.mode if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
+    return float(col.mode) if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
 
 def div(col):
     """
@@ -80,7 +80,6 @@ def stats(data, fun = None, cols = None, nPlaces = 2, includeN = True):
     if includeN:
         tmp["N"] = len(data.rows)
     return tmp
-    # return tmp, map(mid, cols)
 
 def norm(num, n):
     """
@@ -145,7 +144,10 @@ def dist(data, t1, t2, cols=None, d=None, dist1=None):
         return abs(x - y)
 
     def dist1(col, x, y):
-        if x == "?" and y == "?":
+        # Original
+        # if x == "?" and y == "?":
+        #     return 1
+        if x == "?" or y == "?":
             return 1
         return sym(x, y) if hasattr(col, "isSym") and col.isSym else num(norm(col,float(x)), norm(col, float(y)))
 

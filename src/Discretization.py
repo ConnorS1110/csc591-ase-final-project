@@ -17,7 +17,7 @@ def bins(cols, rowss):
         columns based on the values of each column in a list of rows.
 
     Input:
-        cols
+        cols:
             a list of columns to compute the bins for.
         rowss:
             a dictionary of rows where each key represents a row label and the value is a list of values for each column.
@@ -99,6 +99,7 @@ def mergeAny(ranges0):
         t[0].lo = -float("inf")
         t[-1].hi = float("inf")
         return t
+    if isinstance(ranges0, dict): ranges0 = list(ranges0.values())
     ranges1, j = [], 0
     while j < len(ranges0):
         left, right = ranges0[j], ranges0[j+1] if j + 1 < len(ranges0) else None
@@ -167,7 +168,7 @@ def merge(col1, col2):
         new.hi = max(col1.hi, col2.hi)
     return new
 
-def xpln1(data, best, rest):
+def xpln1(data, best, rest, doPrint = True):
     """
     Function:
         xpln1
@@ -185,7 +186,7 @@ def xpln1(data, best, rest):
     def score(ranges):
         rule = RULE(ranges, maxSizes)
         if rule:
-            print(showRule(rule))
+            if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) > 0:
@@ -193,18 +194,19 @@ def xpln1(data, best, rest):
     tmp, maxSizes = [], {}
     for ranges in bins(data.cols.x, {"best": best.rows, "rest": rest.rows}):
         maxSizes[ranges[0].txt] = len(ranges)
-        print("")
+        if doPrint: print("")
         for range in ranges:
-            print(range.txt, range.lo, range.hi)
+            if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({"range": range, "max": len(ranges), "val": v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score)
+    rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score, doPrint)
     return rule, most
 
-def firstN(sortedRanges, scoreFun):
-    print("")
-    for r in sortedRanges:
-        print(r["range"].txt, r["range"].lo, r["range"].hi, round(r["val"], 2), r["range"].y.has)
+def firstN(sortedRanges, scoreFun, doPrint = True):
+    if doPrint:
+        print("")
+        for r in sortedRanges:
+            print(r["range"].txt, r["range"].lo, r["range"].hi, round(r["val"], 2), r["range"].y.has)
     first = sortedRanges[0]["val"]
     def useful(range):
         if range["val"] > 0.05 and range["val"] > first / 10:

@@ -30,4 +30,4 @@ def main(funs):
 if __name__ == "__main__":
     # main(utility.egs)
     getCliArgs()
-    utility.table1()
+    utility.printTables()

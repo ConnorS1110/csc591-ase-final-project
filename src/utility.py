@@ -227,11 +227,19 @@ def explnFunc():
     top = DATA(data, top)
     print(f"sort with {len(data.rows)} evals", query.stats(top), query.stats(top, query.div))
 
-def table1():
+def printTables():
+    list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
+                          "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
+                          "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv", ]
+    for file in list_of_file_paths:
+        print(f"File: {str(file.split('/')[-1]).split('.')[0]}")
+        table1(file)
+
+def table1(filepath):
     script_dir = os.path.dirname(__file__)
-    full_path = os.path.join(script_dir, args.file)
+    full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
-    row_headers = ["all", opt.sway1, disc.xpln1]
+    row_headers = ["all", opt.sway1, disc.xpln1, "top"]
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
@@ -239,23 +247,44 @@ def table1():
     for row in row_headers:
         table1_current_row_stats = {}
         for i in range(1, 21):
+            data = DATA(full_path)
+            # sway1 option
+            if (not isinstance(row, str) and row.__name__ == "sway1"):
+                row_func = row
+                row_string = row.__name__
+                best, _, _ = row_func(data)
+                data_for_stats = best
+            # xpln1 option
+            elif (not isinstance(row, str) and row.__name__ == "xpln1"):
+                row_func = row
+                row_string = row.__name__
+                rule = None
+                while (rule == None):
+                    best, rest, _ = opt.sway1(data)
+                    rule, _ = row_func(data, best, rest, False)
+                data1 = DATA(data, disc.selects(rule, data.rows))
+                data_for_stats = data1
+            # top option
+            elif (isinstance(row, str) and row == "top"):
+                row_string = row
+                top, _ = query.betters(data, len(best.rows))
+                top = DATA(data, top)
+                data_for_stats = top
             # all option
-            if (isinstance(row, str) and row == "all"):
-                data = DATA(full_path)
-                if (not isinstance(row, str) and row.__name__ == "sway1"):
-                    row_func = row
-                    best, _, _ = row_func(data)
-                current_stats = query.stats(data, includeN = False)
-                if not table1_current_row_stats:
-                    # Initialize the dictionary with the first set of stats
-                    table1_current_row_stats = {key: value for key, value in current_stats.items()}
-                else:
-                    # Update the dictionary with the cumulative sum for each key
-                    for key, value in current_stats.items():
-                        table1_current_row_stats[key] += value
-                if i == 20:
-                    for key in table1_current_row_stats.keys():
-                        table1_current_row_stats[key] /= i
-                    table1_string += f"{row:>20}{''.join(f'{v:>14}' for v in table1_current_row_stats.values())}\n"
+            else:
+                row_string = row
+                data_for_stats = data
+            current_stats = query.stats(data_for_stats, includeN = False)
+            if not table1_current_row_stats:
+                # Initialize the dictionary with the first set of stats
+                table1_current_row_stats = {key: value for key, value in current_stats.items()}
+            else:
+                # Update the dictionary with the cumulative sum for each key
+                for key, value in current_stats.items():
+                    table1_current_row_stats[key] += value
+            if i == 20:
+                for key in table1_current_row_stats.keys():
+                    table1_current_row_stats[key] /= i
+                table1_string += f"{row_string:>20}{''.join(f'{round(v, 2):>14}' for v in table1_current_row_stats.values())}\n"
 
     print(table1_string)
