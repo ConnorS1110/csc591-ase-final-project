@@ -137,6 +137,7 @@ def readCSV(sFilename, fun):
     with open(sFilename, mode='r') as file:
         csvFile = csv.reader(file)
         for line in csvFile:
+            line = [value.strip() for value in line]
             fun(line)
 
 def swayFunc():
@@ -230,10 +231,12 @@ def explnFunc():
 def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
-                          "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv", ]
+                          "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
+    table1_dict = {}
     for file in list_of_file_paths:
-        print(f"File: {str(file.split('/')[-1]).split('.')[0]}")
-        table1(file)
+        file_string = str(file.split('/')[-1]).split('.')[0]
+        print(f"File: {file_string}")
+        table1_dict[file_string] = table1(file)
 
 def table1(filepath):
     script_dir = os.path.dirname(__file__)
@@ -244,6 +247,7 @@ def table1(filepath):
     for col in data.cols.y:
         col_headers.append(col.col.txt)
     table1_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
+    table1_current_file_dict = {}
     for row in row_headers:
         table1_current_row_stats = {}
         for i in range(1, 21):
@@ -285,6 +289,8 @@ def table1(filepath):
             if i == 20:
                 for key in table1_current_row_stats.keys():
                     table1_current_row_stats[key] /= i
+                table1_current_file_dict[row if isinstance(row, str) else row.__name__] = table1_current_row_stats
                 table1_string += f"{row_string:>20}{''.join(f'{round(v, 2):>14}' for v in table1_current_row_stats.values())}\n"
 
     print(table1_string)
+    return table1_current_file_dict

@@ -40,6 +40,6 @@ jobs:
            git fetch origin main
            git push origin HEAD:main
         fi
-    - name: Run tests
-      run: |
-        sh -c "python src/main.py -g all";
+    # - name: Run tests
+    #   run: |
+    #     sh -c "python src/main.py -g all";

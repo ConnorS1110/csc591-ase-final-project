@@ -26,7 +26,7 @@ def half(data, rows = None, cols = None, above = None):
         def gap(r1, r2):
             return dist(data, r1, r2, cols)
         def cos(a, b, c):
-            return (a**2 + c**2 - b**2)/(2*c)
+            return (a**2 + c**2 - b**2)/((2 * c) + 1E-32)
         def proj(r):
             return {'row': r, 'x': cos(gap(r, A), gap(r, B), c)}
         rows = rows or data.rows

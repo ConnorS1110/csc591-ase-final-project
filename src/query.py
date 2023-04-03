@@ -2,6 +2,7 @@ from list import *
 from utility import *
 import utility as util
 import math
+import sys
 
 def has(col):
     """
@@ -93,7 +94,7 @@ def norm(num, n):
         Output:
             Normalized value
     """
-    return n if n == "?" else (n - num.lo) / (num.hi - num.lo + 1 / float("inf"))
+    return n if n == "?" else (n - num.lo) / ((num.hi - num.lo + 1 / float("inf")) + 1E-32)
 
 
 def value(has, nB = 1, nR = 1, sGoal = True):
@@ -197,5 +198,6 @@ def betters(data, n = None):
 
         return quicksort(left, cmp_func) + [pivot] + quicksort(right, cmp_func)
 
+    sys.setrecursionlimit(3000)
     tmp = quicksort(data.rows, better)
     return tmp[:n], tmp[n:] if n else tmp

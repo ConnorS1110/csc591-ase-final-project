@@ -2,6 +2,7 @@ from col import COL
 from range import *
 import update as update
 from query import *
+import query as query
 import utility as util
 import math
 from copy import deepcopy
@@ -28,30 +29,31 @@ def bins(cols, rowss):
             the list will only contain Range objects. If the column is not symbolic,
             the list may contain merged ranges of adjacent bins.
     """
-    out = []
-    for col in cols:
-        ranges = {}
+    def with1Col(col):
+        col = col.col
+        n, ranges = withAllRows(col)
+        ranges = sorted(list(ranges.values()), key=lambda x: x.lo) # keyArray to numArray, sorted
+        if hasattr(col, "isSym") and col.isSym:
+            return ranges
+        else:
+            return merges(ranges, n / util.args.bins, util.args.d * query.div(col))
+
+    def withAllRows(col):
+        def xy(x, y):
+            nonlocal n, ranges
+            if x != "?":
+                n += 1
+                k = bin(col, x)
+                ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, x)
+                update.extend(ranges[k], x, y)
+
+        n, ranges = 0, {}
         for y, rows in rowss.items():
             for row in rows:
-                if (isinstance(col, COL)):
-                    col = col.col
-                x = row[col.at]
-                if x != "?":
-                    k = int(bin(col, float(x) if x != "?" else x))
-                    ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, float(x) if x != "?" else x)
-                    update.extend(ranges[k], float(x), y)
-        ranges = {key: value for key, value in sorted(ranges.items(), key=lambda x: x[1].lo)}
-        newRanges = {}
-        i = 0
-        for key in ranges:
-            newRanges[i] = ranges[key]
-            i += 1
-        newRangesList = []
-        if hasattr(col, "isSym") and col.isSym:
-            for item in newRanges.values():
-                newRangesList.append(item)
-        out.append(newRangesList if hasattr(col, "isSym") and col.isSym else mergeAny(newRanges))
-    return out
+                xy(row[col.at], y)
+        return n, ranges
+
+    return list(map(with1Col, cols))
 
 def bin(col, x):
     """
@@ -71,15 +73,17 @@ def bin(col, x):
     Output:
         The corresponding bin value for x based on the range of col.
     """
-    if x=="?" or hasattr(col, "isSym"):
+    if x=="?" or (hasattr(col, "isSym") and col.isSym):
         return x
+    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
-    return 1 if col.hi == col.lo else math.floor(x / tmp + 0.5) * tmp
+    return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)
 
-def mergeAny(ranges0):
+
+def merges(ranges0, nSmall, nFar):
     """
     Function:
-        mergeAny
+        merges
 
     Description:
         The mergeAny function takes a list of range objects ranges0
@@ -96,21 +100,36 @@ def mergeAny(ranges0):
     def noGaps(t):
         for j in range(1, len(t)):
             t[j].lo = t[j-1].hi
-        t[0].lo = -float("inf")
-        t[-1].hi = float("inf")
+        t[0].lo  = -float('inf')
+        t[-1].hi = float('inf')
         return t
-    if isinstance(ranges0, dict): ranges0 = list(ranges0.values())
-    ranges1, j = [], 0
+
+    def try2Merge(left, right, j):
+        y = merged(left.y, right.y, nSmall, nFar)
+        if y:
+            j += 1  # next round, skip over right.
+            left.hi, left.y = right.hi, y
+        return j, left
+
+    ranges1 = []
+    j = 0
     while j < len(ranges0):
-        left, right = ranges0[j], ranges0[j+1] if j + 1 < len(ranges0) else None
-        if right:
-            y = merge2(left.y, right.y)
-            if y:
-               j = j+1
-               left.hi, left.y = right.hi, y
-        ranges1.append(left)
+        here = ranges0[j]
+        if j < len(ranges0) - 1:
+            j, here = try2Merge(here, ranges0[j+1], j)
         j += 1
-    return noGaps(ranges0) if len(ranges1)==len(ranges0) else mergeAny(ranges1)
+        ranges1.append(here)
+
+    return noGaps(ranges0) if len(ranges0) == len(ranges1) else merges(ranges1, nSmall, nFar)
+
+def merged(col1, col2, nSmall=None, nFar=None):
+    new = merge(col1, col2)
+    if nSmall and col1.n < nSmall or col2.n < nSmall:
+        return new
+    if nFar and not (hasattr(col1, "isSym") and col1.isSym) and abs(mid(col1) - mid(col2)) < nFar:
+        return new
+    if div(new) <= (div(col1)*col1.n + div(col2)*col2.n) / new.n:
+        return new
 
 def merge2(col1, col2):
     """
@@ -188,6 +207,8 @@ def xpln1(data, best, rest, doPrint = True):
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print("Here")
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) > 0:
                 return v({"best": len(bestr), "rest": len(restr)}), rule
@@ -246,13 +267,13 @@ def showRule(rule):
 def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = int(range['lo']) if isinstance(range['lo'], str) else range['lo']
-            hi = int(range['hi']) if isinstance(range['hi'], str) else range['hi']
+            lo = float(range['lo']) if isinstance(range['lo'], str) and range['lo'].replace(".", "").replace("-", "").isdigit() else range['lo']
+            hi = float(range['hi']) if isinstance(range['hi'], str) and range['hi'].replace(".", "").replace("-", "").isdigit() else range['hi']
             at = int(range['at'])
             x = row[at]
             if x == "?":
                 return True
-            x = float(x)
+            x = float(x) if x.isdigit() or x.replace(".", "").replace("-", "").isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo <= x and x < hi:
@@ -261,8 +282,9 @@ def selects(rule, rows):
 
     def conjunction(row):
         for ranges in rule.values():
-            if not disjunction(ranges, row):
-                return False
+            if ranges != None:
+                if not disjunction(ranges, row):
+                    return False
         return True
 
     return [r for r in rows if conjunction(r)]
