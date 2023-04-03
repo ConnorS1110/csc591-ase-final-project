@@ -2,6 +2,7 @@ from list import *
 from utility import *
 import utility as util
 import math
+import sys
 
 def has(col):
     """
@@ -33,7 +34,7 @@ def mid(col):
     Output:
         col.mode if col col has isSym and is true, otherwise return the middle value in col
     """
-    return col.mode if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
+    return float(col.mode) if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
 
 def div(col):
     """
@@ -58,7 +59,7 @@ def div(col):
     else:
         return (per(has(col),.9) - per(has(col), .1)) / 2.58
 
-def stats(data, fun = None, cols = None, nPlaces = 2):
+def stats(data, fun = None, cols = None, nPlaces = 2, includeN = True):
     """
     Function:
         stats
@@ -77,9 +78,9 @@ def stats(data, fun = None, cols = None, nPlaces = 2):
         col = col.col
         return round((fun or mid)(col), nPlaces), col.txt
     tmp = kap(cols, callBack)
-    tmp["N"] = len(data.rows)
+    if includeN:
+        tmp["N"] = len(data.rows)
     return tmp
-    # return tmp, map(mid, cols)
 
 def norm(num, n):
     """
@@ -93,7 +94,7 @@ def norm(num, n):
         Output:
             Normalized value
     """
-    return n if n == "?" else (n - num.lo) / (num.hi - num.lo + 1 / float("inf"))
+    return n if n == "?" else (n - num.lo) / ((num.hi - num.lo + 1 / float("inf")) + 1E-32)
 
 
 def value(has, nB = 1, nR = 1, sGoal = True):
@@ -144,7 +145,10 @@ def dist(data, t1, t2, cols=None, d=None, dist1=None):
         return abs(x - y)
 
     def dist1(col, x, y):
-        if x == "?" and y == "?":
+        # Original
+        # if x == "?" and y == "?":
+        #     return 1
+        if x == "?" or y == "?":
             return 1
         return sym(x, y) if hasattr(col, "isSym") and col.isSym else num(norm(col,float(x)), norm(col, float(y)))
 
@@ -194,5 +198,6 @@ def betters(data, n = None):
 
         return quicksort(left, cmp_func) + [pivot] + quicksort(right, cmp_func)
 
+    sys.setrecursionlimit(3000)
     tmp = quicksort(data.rows, better)
     return tmp[:n], tmp[n:] if n else tmp
