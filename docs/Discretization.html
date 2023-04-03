@@ -30,6 +30,7 @@
 from range import *
 import update as update
 from query import *
+import query as query
 import utility as util
 import math
 from copy import deepcopy
@@ -45,7 +46,7 @@ def bins(cols, rowss):
         columns based on the values of each column in a list of rows.
 
     Input:
-        cols
+        cols:
             a list of columns to compute the bins for.
         rowss:
             a dictionary of rows where each key represents a row label and the value is a list of values for each column.
@@ -56,30 +57,31 @@ def bins(cols, rowss):
             the list will only contain Range objects. If the column is not symbolic,
             the list may contain merged ranges of adjacent bins.
     &#34;&#34;&#34;
-    out = []
-    for col in cols:
-        ranges = {}
+    def with1Col(col):
+        col = col.col
+        n, ranges = withAllRows(col)
+        ranges = sorted(list(ranges.values()), key=lambda x: x.lo) # keyArray to numArray, sorted
+        if hasattr(col, &#34;isSym&#34;) and col.isSym:
+            return ranges
+        else:
+            return merges(ranges, n / util.args.bins, util.args.d * query.div(col))
+
+    def withAllRows(col):
+        def xy(x, y):
+            nonlocal n, ranges
+            if x != &#34;?&#34;:
+                n += 1
+                k = bin(col, x)
+                ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, x)
+                update.extend(ranges[k], x, y)
+
+        n, ranges = 0, {}
         for y, rows in rowss.items():
             for row in rows:
-                if (isinstance(col, COL)):
-                    col = col.col
-                x = row[col.at]
-                if x != &#34;?&#34;:
-                    k = int(bin(col, float(x) if x != &#34;?&#34; else x))
-                    ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, float(x) if x != &#34;?&#34; else x)
-                    update.extend(ranges[k], float(x), y)
-        ranges = {key: value for key, value in sorted(ranges.items(), key=lambda x: x[1].lo)}
-        newRanges = {}
-        i = 0
-        for key in ranges:
-            newRanges[i] = ranges[key]
-            i += 1
-        newRangesList = []
-        if hasattr(col, &#34;isSym&#34;) and col.isSym:
-            for item in newRanges.values():
-                newRangesList.append(item)
-        out.append(newRangesList if hasattr(col, &#34;isSym&#34;) and col.isSym else mergeAny(newRanges))
-    return out
+                xy(row[col.at], y)
+        return n, ranges
+
+    return list(map(with1Col, cols))
 
 def bin(col, x):
     &#34;&#34;&#34;
@@ -99,15 +101,17 @@ def bin(col, x):
     Output:
         The corresponding bin value for x based on the range of col.
     &#34;&#34;&#34;
-    if x==&#34;?&#34; or hasattr(col, &#34;isSym&#34;):
+    if x==&#34;?&#34; or (hasattr(col, &#34;isSym&#34;) and col.isSym):
         return x
+    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
-    return 1 if col.hi == col.lo else math.floor(x / tmp + 0.5) * tmp
+    return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)
 
-def mergeAny(ranges0):
+
+def merges(ranges0, nSmall, nFar):
     &#34;&#34;&#34;
     Function:
-        mergeAny
+        merges
 
     Description:
         The mergeAny function takes a list of range objects ranges0
@@ -124,20 +128,36 @@ def mergeAny(ranges0):
     def noGaps(t):
         for j in range(1, len(t)):
             t[j].lo = t[j-1].hi
-        t[0].lo = -float(&#34;inf&#34;)
-        t[-1].hi = float(&#34;inf&#34;)
+        t[0].lo  = -float(&#39;inf&#39;)
+        t[-1].hi = float(&#39;inf&#39;)
         return t
-    ranges1, j = [], 0
+
+    def try2Merge(left, right, j):
+        y = merged(left.y, right.y, nSmall, nFar)
+        if y:
+            j += 1  # next round, skip over right.
+            left.hi, left.y = right.hi, y
+        return j, left
+
+    ranges1 = []
+    j = 0
     while j &lt; len(ranges0):
-        left, right = ranges0[j], ranges0[j+1] if j + 1 &lt; len(ranges0) else None
-        if right:
-            y = merge2(left.y, right.y)
-            if y:
-               j = j+1
-               left.hi, left.y = right.hi, y
-        ranges1.append(left)
+        here = ranges0[j]
+        if j &lt; len(ranges0) - 1:
+            j, here = try2Merge(here, ranges0[j+1], j)
         j += 1
-    return noGaps(ranges0) if len(ranges1)==len(ranges0) else mergeAny(ranges1)
+        ranges1.append(here)
+
+    return noGaps(ranges0) if len(ranges0) == len(ranges1) else merges(ranges1, nSmall, nFar)
+
+def merged(col1, col2, nSmall=None, nFar=None):
+    new = merge(col1, col2)
+    if nSmall and col1.n &lt; nSmall or col2.n &lt; nSmall:
+        return new
+    if nFar and not (hasattr(col1, &#34;isSym&#34;) and col1.isSym) and abs(mid(col1) - mid(col2)) &lt; nFar:
+        return new
+    if div(new) &lt;= (div(col1)*col1.n + div(col2)*col2.n) / new.n:
+        return new
 
 def merge2(col1, col2):
     &#34;&#34;&#34;
@@ -195,7 +215,7 @@ def merge(col1, col2):
         new.hi = max(col1.hi, col2.hi)
     return new
 
-def xpln1(data, best, rest):
+def xpln1(data, best, rest, doPrint = True):
     &#34;&#34;&#34;
     Function:
         xpln1
@@ -213,26 +233,29 @@ def xpln1(data, best, rest):
     def score(ranges):
         rule = RULE(ranges, maxSizes)
         if rule:
-            print(showRule(rule))
+            if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
     tmp, maxSizes = [], {}
     for ranges in bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows}):
         maxSizes[ranges[0].txt] = len(ranges)
-        print(&#34;&#34;)
+        if doPrint: print(&#34;&#34;)
         for range in ranges:
-            print(range.txt, range.lo, range.hi)
+            if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score)
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
     return rule, most
 
-def firstN(sortedRanges, scoreFun):
-    print(&#34;&#34;)
-    for r in sortedRanges:
-        print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
+def firstN(sortedRanges, scoreFun, doPrint = True):
+    if doPrint:
+        print(&#34;&#34;)
+        for r in sortedRanges:
+            print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
     first = sortedRanges[0][&#34;val&#34;]
     def useful(range):
         if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
@@ -272,13 +295,13 @@ def showRule(rule):
 def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = int(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) else range[&#39;lo&#39;]
-            hi = int(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) else range[&#39;hi&#39;]
+            lo = float(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) and range[&#39;lo&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;lo&#39;]
+            hi = float(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) and range[&#39;hi&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;hi&#39;]
             at = int(range[&#39;at&#39;])
             x = row[at]
             if x == &#34;?&#34;:
                 return True
-            x = float(x)
+            x = float(x) if x.isdigit() or x.replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo &lt;= x and x &lt; hi:
@@ -287,8 +310,9 @@ def selects(rule, rows):
 
     def conjunction(row):
         for ranges in rule.values():
-            if not disjunction(ranges, row):
-                return False
+            if ranges != None:
+                if not disjunction(ranges, row):
+                    return False
         return True
 
     return [r for r in rows if conjunction(r)]</code></pre>
@@ -339,10 +363,11 @@ x - A value to be binned.</p>
     Output:
         The corresponding bin value for x based on the range of col.
     &#34;&#34;&#34;
-    if x==&#34;?&#34; or hasattr(col, &#34;isSym&#34;):
+    if x==&#34;?&#34; or (hasattr(col, &#34;isSym&#34;) and col.isSym):
         return x
+    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
-    return 1 if col.hi == col.lo else math.floor(x / tmp + 0.5) * tmp</code></pre>
+    return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)</code></pre>
 </details>
 </dd>
 <dt id="src.Discretization.bins"><code class="name flex">
@@ -355,7 +380,7 @@ x - A value to be binned.</p>
 <p>Computes the bins (ranges of values) for a list of
 columns based on the values of each column in a list of rows.</p>
 <h2 id="input">Input</h2>
-<p>cols
+<p>cols:
 a list of columns to compute the bins for.
 rowss:
 a dictionary of rows where each key represents a row label and the value is a list of values for each column.</p>
@@ -378,7 +403,7 @@ the list may contain merged ranges of adjacent bins.</p></div>
         columns based on the values of each column in a list of rows.
 
     Input:
-        cols
+        cols:
             a list of columns to compute the bins for.
         rowss:
             a dictionary of rows where each key represents a row label and the value is a list of values for each column.
@@ -389,34 +414,35 @@ the list may contain merged ranges of adjacent bins.</p></div>
             the list will only contain Range objects. If the column is not symbolic,
             the list may contain merged ranges of adjacent bins.
     &#34;&#34;&#34;
-    out = []
-    for col in cols:
-        ranges = {}
+    def with1Col(col):
+        col = col.col
+        n, ranges = withAllRows(col)
+        ranges = sorted(list(ranges.values()), key=lambda x: x.lo) # keyArray to numArray, sorted
+        if hasattr(col, &#34;isSym&#34;) and col.isSym:
+            return ranges
+        else:
+            return merges(ranges, n / util.args.bins, util.args.d * query.div(col))
+
+    def withAllRows(col):
+        def xy(x, y):
+            nonlocal n, ranges
+            if x != &#34;?&#34;:
+                n += 1
+                k = bin(col, x)
+                ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, x)
+                update.extend(ranges[k], x, y)
+
+        n, ranges = 0, {}
         for y, rows in rowss.items():
             for row in rows:
-                if (isinstance(col, COL)):
-                    col = col.col
-                x = row[col.at]
-                if x != &#34;?&#34;:
-                    k = int(bin(col, float(x) if x != &#34;?&#34; else x))
-                    ranges[k] = ranges[k] if k in ranges else RANGE(col.at, col.txt, float(x) if x != &#34;?&#34; else x)
-                    update.extend(ranges[k], float(x), y)
-        ranges = {key: value for key, value in sorted(ranges.items(), key=lambda x: x[1].lo)}
-        newRanges = {}
-        i = 0
-        for key in ranges:
-            newRanges[i] = ranges[key]
-            i += 1
-        newRangesList = []
-        if hasattr(col, &#34;isSym&#34;) and col.isSym:
-            for item in newRanges.values():
-                newRangesList.append(item)
-        out.append(newRangesList if hasattr(col, &#34;isSym&#34;) and col.isSym else mergeAny(newRanges))
-    return out</code></pre>
+                xy(row[col.at], y)
+        return n, ranges
+
+    return list(map(with1Col, cols))</code></pre>
 </details>
 </dd>
 <dt id="src.Discretization.firstN"><code class="name flex">
-<span>def <span class="ident">firstN</span></span>(<span>sortedRanges, scoreFun)</span>
+<span>def <span class="ident">firstN</span></span>(<span>sortedRanges, scoreFun, doPrint=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -424,10 +450,11 @@ the list may contain merged ranges of adjacent bins.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def firstN(sortedRanges, scoreFun):
-    print(&#34;&#34;)
-    for r in sortedRanges:
-        print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
+<pre><code class="python">def firstN(sortedRanges, scoreFun, doPrint = True):
+    if doPrint:
+        print(&#34;&#34;)
+        for r in sortedRanges:
+            print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
     first = sortedRanges[0][&#34;val&#34;]
     def useful(range):
         if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
@@ -548,12 +575,31 @@ distance based on their sizes. Otherwise, no output is returned.</p></div>
         return new</code></pre>
 </details>
 </dd>
-<dt id="src.Discretization.mergeAny"><code class="name flex">
-<span>def <span class="ident">mergeAny</span></span>(<span>ranges0)</span>
+<dt id="src.Discretization.merged"><code class="name flex">
+<span>def <span class="ident">merged</span></span>(<span>col1, col2, nSmall=None, nFar=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def merged(col1, col2, nSmall=None, nFar=None):
+    new = merge(col1, col2)
+    if nSmall and col1.n &lt; nSmall or col2.n &lt; nSmall:
+        return new
+    if nFar and not (hasattr(col1, &#34;isSym&#34;) and col1.isSym) and abs(mid(col1) - mid(col2)) &lt; nFar:
+        return new
+    if div(new) &lt;= (div(col1)*col1.n + div(col2)*col2.n) / new.n:
+        return new</code></pre>
+</details>
+</dd>
+<dt id="src.Discretization.merges"><code class="name flex">
+<span>def <span class="ident">merges</span></span>(<span>ranges0, nSmall, nFar)</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="function">Function</h2>
-<p>mergeAny</p>
+<p>merges</p>
 <h2 id="description">Description</h2>
 <p>The mergeAny function takes a list of range objects ranges0
 as input and recursively merges adjacent ranges until there
@@ -567,10 +613,10 @@ are returned in a list.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mergeAny(ranges0):
+<pre><code class="python">def merges(ranges0, nSmall, nFar):
     &#34;&#34;&#34;
     Function:
-        mergeAny
+        merges
 
     Description:
         The mergeAny function takes a list of range objects ranges0
@@ -587,20 +633,27 @@ are returned in a list.</p>
     def noGaps(t):
         for j in range(1, len(t)):
             t[j].lo = t[j-1].hi
-        t[0].lo = -float(&#34;inf&#34;)
-        t[-1].hi = float(&#34;inf&#34;)
+        t[0].lo  = -float(&#39;inf&#39;)
+        t[-1].hi = float(&#39;inf&#39;)
         return t
-    ranges1, j = [], 0
+
+    def try2Merge(left, right, j):
+        y = merged(left.y, right.y, nSmall, nFar)
+        if y:
+            j += 1  # next round, skip over right.
+            left.hi, left.y = right.hi, y
+        return j, left
+
+    ranges1 = []
+    j = 0
     while j &lt; len(ranges0):
-        left, right = ranges0[j], ranges0[j+1] if j + 1 &lt; len(ranges0) else None
-        if right:
-            y = merge2(left.y, right.y)
-            if y:
-               j = j+1
-               left.hi, left.y = right.hi, y
-        ranges1.append(left)
+        here = ranges0[j]
+        if j &lt; len(ranges0) - 1:
+            j, here = try2Merge(here, ranges0[j+1], j)
         j += 1
-    return noGaps(ranges0) if len(ranges1)==len(ranges0) else mergeAny(ranges1)</code></pre>
+        ranges1.append(here)
+
+    return noGaps(ranges0) if len(ranges0) == len(ranges1) else merges(ranges1, nSmall, nFar)</code></pre>
 </details>
 </dd>
 <dt id="src.Discretization.selects"><code class="name flex">
@@ -615,13 +668,13 @@ are returned in a list.</p>
 <pre><code class="python">def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = int(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) else range[&#39;lo&#39;]
-            hi = int(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) else range[&#39;hi&#39;]
+            lo = float(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) and range[&#39;lo&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;lo&#39;]
+            hi = float(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) and range[&#39;hi&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;hi&#39;]
             at = int(range[&#39;at&#39;])
             x = row[at]
             if x == &#34;?&#34;:
                 return True
-            x = float(x)
+            x = float(x) if x.isdigit() or x.replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo &lt;= x and x &lt; hi:
@@ -630,8 +683,9 @@ are returned in a list.</p>
 
     def conjunction(row):
         for ranges in rule.values():
-            if not disjunction(ranges, row):
-                return False
+            if ranges != None:
+                if not disjunction(ranges, row):
+                    return False
         return True
 
     return [r for r in rows if conjunction(r)]</code></pre>
@@ -668,7 +722,7 @@ are returned in a list.</p>
 </details>
 </dd>
 <dt id="src.Discretization.xpln1"><code class="name flex">
-<span>def <span class="ident">xpln1</span></span>(<span>data, best, rest)</span>
+<span>def <span class="ident">xpln1</span></span>(<span>data, best, rest, doPrint=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="function">Function</h2>
@@ -685,7 +739,7 @@ rest - all swayed data not in best</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def xpln1(data, best, rest):
+<pre><code class="python">def xpln1(data, best, rest, doPrint = True):
     &#34;&#34;&#34;
     Function:
         xpln1
@@ -703,20 +757,22 @@ rest - all swayed data not in best</p>
     def score(ranges):
         rule = RULE(ranges, maxSizes)
         if rule:
-            print(showRule(rule))
+            if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
     tmp, maxSizes = [], {}
     for ranges in bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows}):
         maxSizes[ranges[0].txt] = len(ranges)
-        print(&#34;&#34;)
+        if doPrint: print(&#34;&#34;)
         for range in ranges:
-            print(range.txt, range.lo, range.hi)
+            if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score)
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
     return rule, most</code></pre>
 </details>
 </dd>
@@ -743,7 +799,8 @@ rest - all swayed data not in best</p>
 <li><code><a title="src.Discretization.firstN" href="#src.Discretization.firstN">firstN</a></code></li>
 <li><code><a title="src.Discretization.merge" href="#src.Discretization.merge">merge</a></code></li>
 <li><code><a title="src.Discretization.merge2" href="#src.Discretization.merge2">merge2</a></code></li>
-<li><code><a title="src.Discretization.mergeAny" href="#src.Discretization.mergeAny">mergeAny</a></code></li>
+<li><code><a title="src.Discretization.merged" href="#src.Discretization.merged">merged</a></code></li>
+<li><code><a title="src.Discretization.merges" href="#src.Discretization.merges">merges</a></code></li>
 <li><code><a title="src.Discretization.selects" href="#src.Discretization.selects">selects</a></code></li>
 <li><code><a title="src.Discretization.showRule" href="#src.Discretization.showRule">showRule</a></code></li>
 <li><code><a title="src.Discretization.xpln1" href="#src.Discretization.xpln1">xpln1</a></code></li>
