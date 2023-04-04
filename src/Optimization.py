@@ -31,7 +31,7 @@ def sway2(data):
     Function:
         sway2
     Description:
-        Finds the best half of the data by recursion (Menzies)
+        Finds the best half of the data by recursion (Group 8 version)
     Input:
         data - data to sway
     Output:

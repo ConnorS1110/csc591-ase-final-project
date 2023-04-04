@@ -228,7 +228,7 @@ def xpln2(data, best, rest, doPrint = True):
     Function:
         xpln2
     Description:
-        Finds a rule explanation of our optimized best/rest data (Menzies)
+        Finds a rule explanation of our optimized best/rest data (Group 8 version)
     Input:
         data - data to explain
         best- best set of data
