@@ -260,11 +260,11 @@ def printTables():
     list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;, &#34;../etc/data/auto93.csv&#34;, &#34;../etc/data/china.csv&#34;, &#34;../etc/data/coc1000.csv&#34;,
                           &#34;../etc/data/coc10000.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0011-easy.csv&#34;,
                           &#34;../etc/data/nasa93dem.csv&#34;, &#34;../etc/data/pom.csv&#34;, &#34;../etc/data/SSM.csv&#34;, &#34;../etc/data/SSN.csv&#34;]
-    table1_dict = {}
     for file in list_of_file_paths:
         file_string = str(file.split(&#39;/&#39;)[-1]).split(&#39;.&#39;)[0]
         print(f&#34;File: {file_string}&#34;)
-        table1_dict[file_string] = table1(file)
+        table1_dict = table1(file)
+        table2(table1_dict)
 
 def table1(filepath):
     script_dir = os.path.dirname(__file__)
@@ -321,7 +321,35 @@ def table1(filepath):
                 table1_string += f&#34;{row_string:&gt;20}{&#39;&#39;.join(f&#39;{round(v, 2):&gt;14}&#39; for v in table1_current_row_stats.values())}\n&#34;
 
     print(table1_string)
-    return table1_current_file_dict</code></pre>
+    return table1_current_file_dict
+
+def table2(table1_dict):
+    col_headers = []
+    first_key = next(iter(table1_dict))
+    for key in table1_dict[first_key].keys():
+        col_headers.append(key)
+    table2_string = f&#34;{&#39;&#39;:&gt;20}{&#39;&#39;.join(f&#39;{h:&gt;14}&#39; for h in col_headers)}\n&#34;
+    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;],
+                   &#34;sway1&#34;: [&#34;xpln1&#34;, &#34;top&#34;]
+                   }
+    
+    for key, listOfComparison in comparisons.items():
+        # &#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;]&#34;         key is &#34;all&#34;     listOfComparison = [&#34;all&#34;, &#34;sway1&#34;]
+        for comparisonKey in listOfComparison:
+            # comparisonKey is gonna iterate over [&#34;all&#34;, &#34;sway1&#34;]
+            isEqualTo = []
+            for col in col_headers:
+                if table1_dict[key][col] == table1_dict[comparisonKey][col]:
+                    isEqualTo.append(&#34;=&#34;)
+                else:
+                    isEqualTo.append(&#34;≠&#34;)
+            row_string = key + &#34; to &#34; + comparisonKey
+            table2_string += f&#34;{row_string:&gt;20}{&#39;&#39;.join(f&#39;{value:&gt;14}&#39; for value in isEqualTo)}\n&#34;
+    print(table2_string)
+
+
+        
+            </code></pre>
 </details>
 </section>
 <section>
@@ -550,11 +578,11 @@ fun - callback function to use for test case</p>
     list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;, &#34;../etc/data/auto93.csv&#34;, &#34;../etc/data/china.csv&#34;, &#34;../etc/data/coc1000.csv&#34;,
                           &#34;../etc/data/coc10000.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0011-easy.csv&#34;,
                           &#34;../etc/data/nasa93dem.csv&#34;, &#34;../etc/data/pom.csv&#34;, &#34;../etc/data/SSM.csv&#34;, &#34;../etc/data/SSN.csv&#34;]
-    table1_dict = {}
     for file in list_of_file_paths:
         file_string = str(file.split(&#39;/&#39;)[-1]).split(&#39;.&#39;)[0]
         print(f&#34;File: {file_string}&#34;)
-        table1_dict[file_string] = table1(file)</code></pre>
+        table1_dict = table1(file)
+        table2(table1_dict)</code></pre>
 </details>
 </dd>
 <dt id="src.utility.rand"><code class="name flex">
@@ -768,6 +796,40 @@ high - high value</p>
     return table1_current_file_dict</code></pre>
 </details>
 </dd>
+<dt id="src.utility.table2"><code class="name flex">
+<span>def <span class="ident">table2</span></span>(<span>table1_dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def table2(table1_dict):
+    col_headers = []
+    first_key = next(iter(table1_dict))
+    for key in table1_dict[first_key].keys():
+        col_headers.append(key)
+    table2_string = f&#34;{&#39;&#39;:&gt;20}{&#39;&#39;.join(f&#39;{h:&gt;14}&#39; for h in col_headers)}\n&#34;
+    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;],
+                   &#34;sway1&#34;: [&#34;xpln1&#34;, &#34;top&#34;]
+                   }
+    
+    for key, listOfComparison in comparisons.items():
+        # &#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;]&#34;         key is &#34;all&#34;     listOfComparison = [&#34;all&#34;, &#34;sway1&#34;]
+        for comparisonKey in listOfComparison:
+            # comparisonKey is gonna iterate over [&#34;all&#34;, &#34;sway1&#34;]
+            isEqualTo = []
+            for col in col_headers:
+                if table1_dict[key][col] == table1_dict[comparisonKey][col]:
+                    isEqualTo.append(&#34;=&#34;)
+                else:
+                    isEqualTo.append(&#34;≠&#34;)
+            row_string = key + &#34; to &#34; + comparisonKey
+            table2_string += f&#34;{row_string:&gt;20}{&#39;&#39;.join(f&#39;{value:&gt;14}&#39; for value in isEqualTo)}\n&#34;
+    print(table2_string)</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -798,6 +860,7 @@ high - high value</p>
 <li><code><a title="src.utility.rint" href="#src.utility.rint">rint</a></code></li>
 <li><code><a title="src.utility.swayFunc" href="#src.utility.swayFunc">swayFunc</a></code></li>
 <li><code><a title="src.utility.table1" href="#src.utility.table1">table1</a></code></li>
+<li><code><a title="src.utility.table2" href="#src.utility.table2">table2</a></code></li>
 </ul>
 </li>
 </ul>
