@@ -263,14 +263,16 @@ def printTables():
     for file in list_of_file_paths:
         file_string = str(file.split(&#39;/&#39;)[-1]).split(&#39;.&#39;)[0]
         print(f&#34;File: {file_string}&#34;)
+        print(&#34;Table 1:&#34;)
         table1_dict = table1(file)
+        print(&#34;Table 2:&#34;)
         table2(table1_dict)
 
 def table1(filepath):
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
-    row_headers = [&#34;all&#34;, opt.sway1, disc.xpln1, &#34;top&#34;]
+    row_headers = [&#34;all&#34;, opt.sway1, disc.xpln1, opt.sway2, disc.xpln2, &#34;top&#34;]
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
@@ -286,6 +288,11 @@ def table1(filepath):
                 row_string = row.__name__
                 best, _, _ = row_func(data)
                 data_for_stats = best
+            elif (not isinstance(row, str) and row.__name__ == &#34;sway2&#34;):
+                row_func = row
+                row_string = row.__name__
+                best, _, _ = row_func(data)
+                data_for_stats = best
             # xpln1 option
             elif (not isinstance(row, str) and row.__name__ == &#34;xpln1&#34;):
                 row_func = row
@@ -293,6 +300,15 @@ def table1(filepath):
                 rule = None
                 while (rule == None):
                     best, rest, _ = opt.sway1(data)
+                    rule, _ = row_func(data, best, rest, False)
+                data1 = DATA(data, disc.selects(rule, data.rows))
+                data_for_stats = data1
+            elif (not isinstance(row, str) and row.__name__ == &#34;xpln2&#34;):
+                row_func = row
+                row_string = row.__name__
+                rule = None
+                while (rule == None):
+                    best, rest, _ = opt.sway2(data)
                     rule, _ = row_func(data, best, rest, False)
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
@@ -329,10 +345,11 @@ def table2(table1_dict):
     for key in table1_dict[first_key].keys():
         col_headers.append(key)
     table2_string = f&#34;{&#39;&#39;:&gt;20}{&#39;&#39;.join(f&#39;{h:&gt;14}&#39; for h in col_headers)}\n&#34;
-    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;],
-                   &#34;sway1&#34;: [&#34;xpln1&#34;, &#34;top&#34;]
+    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;, &#34;sway2&#34;],
+                   &#34;sway1&#34;: [&#34;sway2&#34;, &#34;xpln1&#34;, &#34;top&#34;],
+                   &#34;sway2&#34;: [&#34;xpln2&#34;]
                    }
-    
+
     for key, listOfComparison in comparisons.items():
         # &#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;]&#34;         key is &#34;all&#34;     listOfComparison = [&#34;all&#34;, &#34;sway1&#34;]
         for comparisonKey in listOfComparison:
@@ -345,11 +362,7 @@ def table2(table1_dict):
                     isEqualTo.append(&#34;≠&#34;)
             row_string = key + &#34; to &#34; + comparisonKey
             table2_string += f&#34;{row_string:&gt;20}{&#39;&#39;.join(f&#39;{value:&gt;14}&#39; for value in isEqualTo)}\n&#34;
-    print(table2_string)
-
-
-        
-            </code></pre>
+    print(table2_string)</code></pre>
 </details>
 </section>
 <section>
@@ -581,7 +594,9 @@ fun - callback function to use for test case</p>
     for file in list_of_file_paths:
         file_string = str(file.split(&#39;/&#39;)[-1]).split(&#39;.&#39;)[0]
         print(f&#34;File: {file_string}&#34;)
+        print(&#34;Table 1:&#34;)
         table1_dict = table1(file)
+        print(&#34;Table 2:&#34;)
         table2(table1_dict)</code></pre>
 </details>
 </dd>
@@ -742,7 +757,7 @@ high - high value</p>
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
-    row_headers = [&#34;all&#34;, opt.sway1, disc.xpln1, &#34;top&#34;]
+    row_headers = [&#34;all&#34;, opt.sway1, disc.xpln1, opt.sway2, disc.xpln2, &#34;top&#34;]
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
@@ -758,6 +773,11 @@ high - high value</p>
                 row_string = row.__name__
                 best, _, _ = row_func(data)
                 data_for_stats = best
+            elif (not isinstance(row, str) and row.__name__ == &#34;sway2&#34;):
+                row_func = row
+                row_string = row.__name__
+                best, _, _ = row_func(data)
+                data_for_stats = best
             # xpln1 option
             elif (not isinstance(row, str) and row.__name__ == &#34;xpln1&#34;):
                 row_func = row
@@ -765,6 +785,15 @@ high - high value</p>
                 rule = None
                 while (rule == None):
                     best, rest, _ = opt.sway1(data)
+                    rule, _ = row_func(data, best, rest, False)
+                data1 = DATA(data, disc.selects(rule, data.rows))
+                data_for_stats = data1
+            elif (not isinstance(row, str) and row.__name__ == &#34;xpln2&#34;):
+                row_func = row
+                row_string = row.__name__
+                rule = None
+                while (rule == None):
+                    best, rest, _ = opt.sway2(data)
                     rule, _ = row_func(data, best, rest, False)
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
@@ -811,10 +840,11 @@ high - high value</p>
     for key in table1_dict[first_key].keys():
         col_headers.append(key)
     table2_string = f&#34;{&#39;&#39;:&gt;20}{&#39;&#39;.join(f&#39;{h:&gt;14}&#39; for h in col_headers)}\n&#34;
-    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;],
-                   &#34;sway1&#34;: [&#34;xpln1&#34;, &#34;top&#34;]
+    comparisons = {&#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;, &#34;sway2&#34;],
+                   &#34;sway1&#34;: [&#34;sway2&#34;, &#34;xpln1&#34;, &#34;top&#34;],
+                   &#34;sway2&#34;: [&#34;xpln2&#34;]
                    }
-    
+
     for key, listOfComparison in comparisons.items():
         # &#34;all&#34;: [&#34;all&#34;, &#34;sway1&#34;]&#34;         key is &#34;all&#34;     listOfComparison = [&#34;all&#34;, &#34;sway1&#34;]
         for comparisonKey in listOfComparison:
