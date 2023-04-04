@@ -223,6 +223,42 @@ def xpln1(data, best, rest, doPrint = True):
     rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score, doPrint)
     return rule, most
 
+def xpln2(data, best, rest, doPrint = True):
+    """
+    Function:
+        xpln2
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    """
+    def v(has):
+        return value(has, len(best.rows), len(rest.rows), "best")
+    def score(ranges):
+        rule = RULE(ranges, maxSizes)
+        if rule:
+            if doPrint: print(showRule(rule))
+            bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print("Here")
+            restr= selects(rule, rest.rows)
+            if len(bestr) + len(restr) > 0:
+                return v({"best": len(bestr), "rest": len(restr)}), rule
+    tmp, maxSizes = [], {}
+    for ranges in bins(data.cols.x, {"best": best.rows, "rest": rest.rows}):
+        maxSizes[ranges[0].txt] = len(ranges)
+        if doPrint: print("")
+        for range in ranges:
+            if doPrint: print(range.txt, range.lo, range.hi)
+            tmp.append({"range": range, "max": len(ranges), "val": v(range.y.has)})
+
+    rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score, doPrint)
+    return rule, most
+
 def firstN(sortedRanges, scoreFun, doPrint = True):
     if doPrint:
         print("")

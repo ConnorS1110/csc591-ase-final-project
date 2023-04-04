@@ -235,14 +235,16 @@ def printTables():
     for file in list_of_file_paths:
         file_string = str(file.split('/')[-1]).split('.')[0]
         print(f"File: {file_string}")
+        print("Table 1:")
         table1_dict = table1(file)
+        print("Table 2:")
         table2(table1_dict)
 
 def table1(filepath):
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
-    row_headers = ["all", opt.sway1, disc.xpln1, "top"]
+    row_headers = ["all", opt.sway1, disc.xpln1, opt.sway2, disc.xpln2, "top"]
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
@@ -258,6 +260,11 @@ def table1(filepath):
                 row_string = row.__name__
                 best, _, _ = row_func(data)
                 data_for_stats = best
+            elif (not isinstance(row, str) and row.__name__ == "sway2"):
+                row_func = row
+                row_string = row.__name__
+                best, _, _ = row_func(data)
+                data_for_stats = best
             # xpln1 option
             elif (not isinstance(row, str) and row.__name__ == "xpln1"):
                 row_func = row
@@ -265,6 +272,15 @@ def table1(filepath):
                 rule = None
                 while (rule == None):
                     best, rest, _ = opt.sway1(data)
+                    rule, _ = row_func(data, best, rest, False)
+                data1 = DATA(data, disc.selects(rule, data.rows))
+                data_for_stats = data1
+            elif (not isinstance(row, str) and row.__name__ == "xpln2"):
+                row_func = row
+                row_string = row.__name__
+                rule = None
+                while (rule == None):
+                    best, rest, _ = opt.sway2(data)
                     rule, _ = row_func(data, best, rest, False)
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
@@ -301,10 +317,11 @@ def table2(table1_dict):
     for key in table1_dict[first_key].keys():
         col_headers.append(key)
     table2_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
-    comparisons = {"all": ["all", "sway1"],
-                   "sway1": ["xpln1", "top"]
+    comparisons = {"all": ["all", "sway1", "sway2"],
+                   "sway1": ["sway2", "xpln1", "top"],
+                   "sway2": ["xpln2"]
                    }
-    
+
     for key, listOfComparison in comparisons.items():
         # "all": ["all", "sway1"]"         key is "all"     listOfComparison = ["all", "sway1"]
         for comparisonKey in listOfComparison:
@@ -318,8 +335,3 @@ def table2(table1_dict):
             row_string = key + " to " + comparisonKey
             table2_string += f"{row_string:>20}{''.join(f'{value:>14}' for value in isEqualTo)}\n"
     print(table2_string)
-
-
-        
-            
-
