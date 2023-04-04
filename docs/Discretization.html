@@ -251,6 +251,42 @@ def xpln1(data, best, rest, doPrint = True):
     rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
     return rule, most
 
+def xpln2(data, best, rest, doPrint = True):
+    &#34;&#34;&#34;
+    Function:
+        xpln2
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    &#34;&#34;&#34;
+    def v(has):
+        return value(has, len(best.rows), len(rest.rows), &#34;best&#34;)
+    def score(ranges):
+        rule = RULE(ranges, maxSizes)
+        if rule:
+            if doPrint: print(showRule(rule))
+            bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print(&#34;Here&#34;)
+            restr= selects(rule, rest.rows)
+            if len(bestr) + len(restr) &gt; 0:
+                return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
+    tmp, maxSizes = [], {}
+    for ranges in bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows}):
+        maxSizes[ranges[0].txt] = len(ranges)
+        if doPrint: print(&#34;&#34;)
+        for range in ranges:
+            if doPrint: print(range.txt, range.lo, range.hi)
+            tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
+
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
+    return rule, most
+
 def firstN(sortedRanges, scoreFun, doPrint = True):
     if doPrint:
         print(&#34;&#34;)
@@ -776,6 +812,61 @@ rest - all swayed data not in best</p>
     return rule, most</code></pre>
 </details>
 </dd>
+<dt id="src.Discretization.xpln2"><code class="name flex">
+<span>def <span class="ident">xpln2</span></span>(<span>data, best, rest, doPrint=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="function">Function</h2>
+<p>xpln2</p>
+<h2 id="description">Description</h2>
+<p>Finds a rule explanation of our optimized best/rest data (Menzies)</p>
+<h2 id="input">Input</h2>
+<p>data - data to explain
+best- best set of data
+rest - all swayed data not in best</p>
+<h2 id="output">Output</h2>
+<p>Rule explanation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xpln2(data, best, rest, doPrint = True):
+    &#34;&#34;&#34;
+    Function:
+        xpln2
+    Description:
+        Finds a rule explanation of our optimized best/rest data (Menzies)
+    Input:
+        data - data to explain
+        best- best set of data
+        rest - all swayed data not in best
+    Output:
+        Rule explanation
+    &#34;&#34;&#34;
+    def v(has):
+        return value(has, len(best.rows), len(rest.rows), &#34;best&#34;)
+    def score(ranges):
+        rule = RULE(ranges, maxSizes)
+        if rule:
+            if doPrint: print(showRule(rule))
+            bestr= selects(rule, best.rows)
+            if rule.values() == None:
+                print(&#34;Here&#34;)
+            restr= selects(rule, rest.rows)
+            if len(bestr) + len(restr) &gt; 0:
+                return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
+    tmp, maxSizes = [], {}
+    for ranges in bins(data.cols.x, {&#34;best&#34;: best.rows, &#34;rest&#34;: rest.rows}):
+        maxSizes[ranges[0].txt] = len(ranges)
+        if doPrint: print(&#34;&#34;)
+        for range in ranges:
+            if doPrint: print(range.txt, range.lo, range.hi)
+            tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
+
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
+    return rule, most</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -804,6 +895,7 @@ rest - all swayed data not in best</p>
 <li><code><a title="src.Discretization.selects" href="#src.Discretization.selects">selects</a></code></li>
 <li><code><a title="src.Discretization.showRule" href="#src.Discretization.showRule">showRule</a></code></li>
 <li><code><a title="src.Discretization.xpln1" href="#src.Discretization.xpln1">xpln1</a></code></li>
+<li><code><a title="src.Discretization.xpln2" href="#src.Discretization.xpln2">xpln2</a></code></li>
 </ul>
 </li>
 </ul>
