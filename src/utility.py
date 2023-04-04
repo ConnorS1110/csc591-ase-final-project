@@ -232,11 +232,11 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
-    table1_dict = {}
     for file in list_of_file_paths:
         file_string = str(file.split('/')[-1]).split('.')[0]
         print(f"File: {file_string}")
-        table1_dict[file_string] = table1(file)
+        table1_dict = table1(file)
+        table2(table1_dict)
 
 def table1(filepath):
     script_dir = os.path.dirname(__file__)
@@ -294,3 +294,32 @@ def table1(filepath):
 
     print(table1_string)
     return table1_current_file_dict
+
+def table2(table1_dict):
+    col_headers = []
+    first_key = next(iter(table1_dict))
+    for key in table1_dict[first_key].keys():
+        col_headers.append(key)
+    table2_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
+    comparisons = {"all": ["all", "sway1"],
+                   "sway1": ["xpln1", "top"]
+                   }
+    
+    for key, listOfComparison in comparisons.items():
+        # "all": ["all", "sway1"]"         key is "all"     listOfComparison = ["all", "sway1"]
+        for comparisonKey in listOfComparison:
+            # comparisonKey is gonna iterate over ["all", "sway1"]
+            isEqualTo = []
+            for col in col_headers:
+                if table1_dict[key][col] == table1_dict[comparisonKey][col]:
+                    isEqualTo.append("=")
+                else:
+                    isEqualTo.append("≠")
+            row_string = key + " to " + comparisonKey
+            table2_string += f"{row_string:>20}{''.join(f'{value:>14}' for value in isEqualTo)}\n"
+    print(table2_string)
+
+
+        
+            
+
