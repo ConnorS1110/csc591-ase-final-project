@@ -1,3 +1,4 @@
+from functools import cmp_to_key
 from list import *
 from utility import *
 import utility as util
@@ -34,7 +35,7 @@ def mid(col):
     Output:
         col.mode if col col has isSym and is true, otherwise return the middle value in col
     """
-    return float(col.mode) if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
+    return col.mode if hasattr(col, "isSym") and col.isSym else per(has(col), 0.5)
 
 def div(col):
     """
@@ -182,22 +183,5 @@ def better(data, row1, row2):
     return s1/len(ys) < s2 / len(ys)
 
 def betters(data, n = None):
-    def quicksort(arr, cmp_func):
-        if len(arr) <= 1:
-            return arr
-
-        pivot = arr[0]
-        left = []
-        right = []
-
-        for item in arr[1:]:
-            if cmp_func(data, item, pivot) == True:
-                left.append(item)
-            else:
-                right.append(item)
-
-        return quicksort(left, cmp_func) + [pivot] + quicksort(right, cmp_func)
-
-    sys.setrecursionlimit(3000)
-    tmp = quicksort(data.rows, better)
+    tmp = sorted(data.rows, key = cmp_to_key(lambda row1, row2: -1 if better(data, row1, row2) else 1))
     return tmp[:n], tmp[n:] if n else tmp

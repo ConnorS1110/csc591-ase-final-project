@@ -140,6 +140,19 @@ def readCSV(sFilename, fun):
             line = [value.strip() for value in line]
             fun(line)
 
+def mean(col):
+    """
+    Function:
+        mean
+    Description:
+        Returns mean of col
+    Input:
+        col - col to find mean of
+    Output:
+        col.mode if col col has isSym and is true, otherwise return the mean value in col
+    """
+    return col.mode if hasattr(col, "isSym") and col.isSym else sum(col.has) / len(col.has)
+
 def swayFunc():
     """
     Function:
@@ -232,23 +245,35 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
+    # list_of_file_paths = ["../etc/data/auto2.csv"]
+    script_dir = os.path.dirname(__file__)
+    full_file_path = os.path.join(script_dir, "../etc/out/script.out")
+    with open(full_file_path, "w") as textFile:
+        textFile.write("")
     for file in list_of_file_paths:
         file_string = str(file.split('/')[-1]).split('.')[0]
         print(f"File: {file_string}")
+        with open(full_file_path, "a") as textFile:
+            textFile.write(f"File: {file_string}\n")
         print("Table 1:")
-        table1_dict = table1(file)
+        table1_dict = table1(file, full_file_path)
         print("Table 2:")
-        table2(table1_dict)
+        table2(table1_dict, full_file_path)
+        print("Sampling Taxes:")
+        sampleTaxes(table1_dict, full_file_path)
+        print("Explanation Taxes:")
+        xplnTaxes(table1_dict, full_file_path)
 
-def table1(filepath):
+def table1(filepath, full_file_path):
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
     row_headers = ["all", opt.sway1, disc.xpln1, opt.sway2, disc.xpln2, "top"]
+    # row_headers = ["all", opt.sway1, disc.xpln1, "top"]
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
-    table1_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
+    table1_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
     table1_current_file_dict = {}
     for row in row_headers:
         table1_current_row_stats = {}
@@ -294,7 +319,7 @@ def table1(filepath):
             else:
                 row_string = row
                 data_for_stats = data
-            current_stats = query.stats(data_for_stats, includeN = False)
+            current_stats = query.stats(data_for_stats, mean, includeN = False)
             if not table1_current_row_stats:
                 # Initialize the dictionary with the first set of stats
                 table1_current_row_stats = {key: value for key, value in current_stats.items()}
@@ -306,17 +331,19 @@ def table1(filepath):
                 for key in table1_current_row_stats.keys():
                     table1_current_row_stats[key] /= i
                 table1_current_file_dict[row if isinstance(row, str) else row.__name__] = table1_current_row_stats
-                table1_string += f"{row_string:>20}{''.join(f'{round(v, 2):>14}' for v in table1_current_row_stats.values())}\n"
+                table1_string += f"{row_string:>30}{''.join(f'{round(v, 2):>20}' for v in table1_current_row_stats.values())}\n"
 
     print(table1_string)
+    with open(full_file_path, "a", encoding="utf-8") as file:
+        file.write("Table 1:\n" + table1_string + "\n")
     return table1_current_file_dict
 
-def table2(table1_dict):
+def table2(table1_dict, full_file_path):
     col_headers = []
     first_key = next(iter(table1_dict))
     for key in table1_dict[first_key].keys():
         col_headers.append(key)
-    table2_string = f"{'':>20}{''.join(f'{h:>14}' for h in col_headers)}\n"
+    table2_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
     comparisons = {"all": ["all", "sway1", "sway2"],
                    "sway1": ["sway2", "xpln1", "top"],
                    "sway2": ["xpln2"]
@@ -333,5 +360,42 @@ def table2(table1_dict):
                 else:
                     isEqualTo.append("≠")
             row_string = key + " to " + comparisonKey
-            table2_string += f"{row_string:>20}{''.join(f'{value:>14}' for value in isEqualTo)}\n"
+            table2_string += f"{row_string:>30}{''.join(f'{value:>20}' for value in isEqualTo)}\n"
     print(table2_string)
+    with open(full_file_path, "a", encoding="utf-8") as file:
+        file.write("Table 2:\n" + table2_string + "\n")
+
+def sampleTaxes(table1_dict, full_file_path):
+    col_headers = []
+    first_key = next(iter(table1_dict))
+    for key in table1_dict[first_key].keys():
+        col_headers.append(key)
+    sampleTaxes_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
+    all_values = list(table1_dict["all"].values())
+    taxList = ["sway1", "sway2"]
+    for tax in taxList:
+        row_string = f"Sampling Tax (all - {tax})"
+        sampleTaxes_string += f"{row_string:>30}{''.join(f'{round(all_values[index] - value, 1):>20}' for index, value in enumerate(list(table1_dict[tax].values())))}\n"
+
+    print(sampleTaxes_string)
+    with open(full_file_path, "a", encoding="utf-8") as file:
+        file.write("Sampling Taxes:\n" + sampleTaxes_string + "\n")
+
+def xplnTaxes(table1_dict, full_file_path):
+    col_headers = []
+    first_key = next(iter(table1_dict))
+    for key in table1_dict[first_key].keys():
+        col_headers.append(key)
+    xplnTaxes_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
+    taxList = [["xpln1", "sway1"], ["xpln2", "sway2"]]
+    for tax in taxList:
+        xpln = tax[0]
+        sway = tax[1]
+        sway_values = list(table1_dict[sway].values())
+        row_string = f"{xpln} Tax ({sway} - {xpln})"
+        xplnTaxes_string += f"{row_string:>30}{''.join(f'{round(sway_values[index] - value, 1):>20}' for index, value in enumerate(list(table1_dict[xpln].values())))}\n"
+
+    xplnTaxes_string += "\n"
+    print(xplnTaxes_string)
+    with open(full_file_path, "a", encoding="utf-8") as file:
+        file.write("Explanation Taxes:\n" + xplnTaxes_string + "\n")
