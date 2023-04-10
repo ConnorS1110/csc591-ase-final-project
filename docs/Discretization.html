@@ -235,8 +235,6 @@ def xpln1(data, best, rest, doPrint = True):
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
@@ -271,8 +269,6 @@ def xpln2(data, best, rest, doPrint = True):
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
@@ -795,8 +791,6 @@ rest - all swayed data not in best</p>
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
@@ -850,8 +844,6 @@ rest - all swayed data not in best</p>
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print(&#34;Here&#34;)
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) &gt; 0:
                 return v({&#34;best&#34;: len(bestr), &#34;rest&#34;: len(restr)}), rule
