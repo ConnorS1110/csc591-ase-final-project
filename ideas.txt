@@ -5,3 +5,7 @@ Use something other than euclidean distance?
 Change value for Far
 Change values for other parameters
 better uses B and A currently as reps for each half. Instead maybe find true center of each half and use those as reps instead.
+
+
+Xpln 2 Ideas:
+Grab top N number of rules instead of using a range of 0.05 - first / 10 ranges and further filter to remove ranges that have a quality score below a certain threshold
