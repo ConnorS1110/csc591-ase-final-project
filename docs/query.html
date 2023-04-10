@@ -26,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from list import *
+<pre><code class="python">from functools import cmp_to_key
+from list import *
 from utility import *
 import utility as util
 import math
@@ -62,7 +63,7 @@ def mid(col):
     Output:
         col.mode if col col has isSym and is true, otherwise return the middle value in col
     &#34;&#34;&#34;
-    return float(col.mode) if hasattr(col, &#34;isSym&#34;) and col.isSym else per(has(col), 0.5)
+    return col.mode if hasattr(col, &#34;isSym&#34;) and col.isSym else per(has(col), 0.5)
 
 def div(col):
     &#34;&#34;&#34;
@@ -210,24 +211,7 @@ def better(data, row1, row2):
     return s1/len(ys) &lt; s2 / len(ys)
 
 def betters(data, n = None):
-    def quicksort(arr, cmp_func):
-        if len(arr) &lt;= 1:
-            return arr
-
-        pivot = arr[0]
-        left = []
-        right = []
-
-        for item in arr[1:]:
-            if cmp_func(data, item, pivot) == True:
-                left.append(item)
-            else:
-                right.append(item)
-
-        return quicksort(left, cmp_func) + [pivot] + quicksort(right, cmp_func)
-
-    sys.setrecursionlimit(3000)
-    tmp = quicksort(data.rows, better)
+    tmp = sorted(data.rows, key = cmp_to_key(lambda row1, row2: -1 if better(data, row1, row2) else 1))
     return tmp[:n], tmp[n:] if n else tmp</code></pre>
 </details>
 </section>
@@ -290,24 +274,7 @@ row2 - second row</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def betters(data, n = None):
-    def quicksort(arr, cmp_func):
-        if len(arr) &lt;= 1:
-            return arr
-
-        pivot = arr[0]
-        left = []
-        right = []
-
-        for item in arr[1:]:
-            if cmp_func(data, item, pivot) == True:
-                left.append(item)
-            else:
-                right.append(item)
-
-        return quicksort(left, cmp_func) + [pivot] + quicksort(right, cmp_func)
-
-    sys.setrecursionlimit(3000)
-    tmp = quicksort(data.rows, better)
+    tmp = sorted(data.rows, key = cmp_to_key(lambda row1, row2: -1 if better(data, row1, row2) else 1))
     return tmp[:n], tmp[n:] if n else tmp</code></pre>
 </details>
 </dd>
@@ -471,7 +438,7 @@ cols - cols to use as the data for distance</p>
     Output:
         col.mode if col col has isSym and is true, otherwise return the middle value in col
     &#34;&#34;&#34;
-    return float(col.mode) if hasattr(col, &#34;isSym&#34;) and col.isSym else per(has(col), 0.5)</code></pre>
+    return col.mode if hasattr(col, &#34;isSym&#34;) and col.isSym else per(has(col), 0.5)</code></pre>
 </details>
 </dd>
 <dt id="src.query.norm"><code class="name flex">
