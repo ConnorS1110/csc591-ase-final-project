@@ -207,8 +207,6 @@ def xpln1(data, best, rest, doPrint = True):
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print("Here")
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) > 0:
                 return v({"best": len(bestr), "rest": len(restr)}), rule
@@ -243,8 +241,6 @@ def xpln2(data, best, rest, doPrint = True):
         if rule:
             if doPrint: print(showRule(rule))
             bestr= selects(rule, best.rows)
-            if rule.values() == None:
-                print("Here")
             restr= selects(rule, rest.rows)
             if len(bestr) + len(restr) > 0:
                 return v({"best": len(bestr), "rest": len(restr)}), rule
