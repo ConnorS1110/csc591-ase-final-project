@@ -42,7 +42,35 @@ def sway2(data):
             return rows, many(worse, util.args.rest*len(rows)), evals0
         else:
             l, r, A, B, c, evals = half(data, rows, None, above, True)
-            if query.better(data, B, A):
+            l_avg = []
+            r_avg = []
+            for dataHalf in [l, r]:
+                symDict = {}
+                for index in range(len(dataHalf[0])):
+                    if isinstance(data.cols.all[index].col, NUM):
+                        colSum = 0
+                        for inner_list in dataHalf:
+                            if inner_list[index] == "?":
+                                # Use average of the col if "?"
+                                colSum += (sum(data.cols.all[index].col.has) /
+                                           data.cols.all[index].col.n) if data.cols.all[index].col.n != 0 else 0
+                            else:
+                                colSum += inner_list[index]
+                        if dataHalf == l:
+                            l_avg.append(colSum / len(dataHalf))
+                        else:
+                            r_avg.append(colSum / len(dataHalf))
+                    else:
+                        for inner_list in dataHalf:
+                            if not inner_list[index] in symDict:
+                                symDict[inner_list[index]] = 1
+                            else:
+                                symDict[inner_list[index]] += 1
+                        if dataHalf == l:
+                            l_avg.append(max(symDict, key=symDict.get))
+                        else:
+                            r_avg.append(max(symDict, key=symDict.get))
+            if query.better(data, r_avg, l_avg):
                 l, r, A, B = r, l, B, A
             for row in r:
                 worse.append(row)

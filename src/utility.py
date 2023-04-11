@@ -253,7 +253,7 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
-    # list_of_file_paths = ["../etc/data/healthCloseIsses12mths0001-hard.csv"]
+    list_of_file_paths = ["../etc/data/nasa93dem.csv"]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, "../etc/out/script.out")
     with open(full_file_path, "w") as textFile:
