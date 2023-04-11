@@ -162,10 +162,18 @@ def readCSV(sFilename, fun):
     Output:
         None
     &#34;&#34;&#34;
+
+    # convert numerical values to floats as they appear
+    def is_float(s):
+        try:
+            return float(s)
+        except ValueError:
+            return s
+
     with open(sFilename, mode=&#39;r&#39;) as file:
         csvFile = csv.reader(file)
         for line in csvFile:
-            line = [value.strip() for value in line]
+            line = [is_float(value.strip()) for value in line]
             fun(line)
 
 def mean(col):
@@ -273,7 +281,7 @@ def printTables():
     list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;, &#34;../etc/data/auto93.csv&#34;, &#34;../etc/data/china.csv&#34;, &#34;../etc/data/coc1000.csv&#34;,
                           &#34;../etc/data/coc10000.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0011-easy.csv&#34;,
                           &#34;../etc/data/nasa93dem.csv&#34;, &#34;../etc/data/pom.csv&#34;, &#34;../etc/data/SSM.csv&#34;, &#34;../etc/data/SSN.csv&#34;]
-    # list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;]
+    # list_of_file_paths = [&#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, &#34;../etc/out/script.out&#34;)
     with open(full_file_path, &#34;w&#34;) as textFile:
@@ -685,7 +693,7 @@ fun - callback function to use for test case</p>
     list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;, &#34;../etc/data/auto93.csv&#34;, &#34;../etc/data/china.csv&#34;, &#34;../etc/data/coc1000.csv&#34;,
                           &#34;../etc/data/coc10000.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;, &#34;../etc/data/healthCloseIsses12mths0011-easy.csv&#34;,
                           &#34;../etc/data/nasa93dem.csv&#34;, &#34;../etc/data/pom.csv&#34;, &#34;../etc/data/SSM.csv&#34;, &#34;../etc/data/SSN.csv&#34;]
-    # list_of_file_paths = [&#34;../etc/data/auto2.csv&#34;]
+    # list_of_file_paths = [&#34;../etc/data/healthCloseIsses12mths0001-hard.csv&#34;]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, &#34;../etc/out/script.out&#34;)
     with open(full_file_path, &#34;w&#34;) as textFile:
@@ -769,10 +777,18 @@ fun - callback function to be called for each line in the CSV</p>
     Output:
         None
     &#34;&#34;&#34;
+
+    # convert numerical values to floats as they appear
+    def is_float(s):
+        try:
+            return float(s)
+        except ValueError:
+            return s
+
     with open(sFilename, mode=&#39;r&#39;) as file:
         csvFile = csv.reader(file)
         for line in csvFile:
-            line = [value.strip() for value in line]
+            line = [is_float(value.strip()) for value in line]
             fun(line)</code></pre>
 </details>
 </dd>

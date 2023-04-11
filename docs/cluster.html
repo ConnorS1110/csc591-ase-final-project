@@ -32,7 +32,7 @@ import utility as util
 
 
 
-def half(data, rows = None, cols = None, above = None):
+def half(data, rows = None, cols = None, above = None, useDist2 = False):
         &#34;&#34;&#34;
         Function:
             half
@@ -52,7 +52,9 @@ def half(data, rows = None, cols = None, above = None):
             c - Distance between A and B
         &#34;&#34;&#34;
         def gap(r1, r2):
-            return dist(data, r1, r2, cols)
+            if (not useDist2):
+                return dist(data, r1, r2, cols)
+            return dist2(data, r1, r2, cols)
         def cos(a, b, c):
             return (a**2 + c**2 - b**2)/((2 * c) + 1E-32)
         def proj(r):
@@ -112,7 +114,7 @@ def showTree(tree, lvl=0):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="src.cluster.half"><code class="name flex">
-<span>def <span class="ident">half</span></span>(<span>data, rows=None, cols=None, above=None)</span>
+<span>def <span class="ident">half</span></span>(<span>data, rows=None, cols=None, above=None, useDist2=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="function">Function</h2>
@@ -135,7 +137,7 @@ c - Distance between A and B</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def half(data, rows = None, cols = None, above = None):
+<pre><code class="python">def half(data, rows = None, cols = None, above = None, useDist2 = False):
         &#34;&#34;&#34;
         Function:
             half
@@ -155,7 +157,9 @@ c - Distance between A and B</p></div>
             c - Distance between A and B
         &#34;&#34;&#34;
         def gap(r1, r2):
-            return dist(data, r1, r2, cols)
+            if (not useDist2):
+                return dist(data, r1, r2, cols)
+            return dist2(data, r1, r2, cols)
         def cos(a, b, c):
             return (a**2 + c**2 - b**2)/((2 * c) + 1E-32)
         def proj(r):

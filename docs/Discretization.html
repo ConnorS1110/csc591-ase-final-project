@@ -103,7 +103,6 @@ def bin(col, x):
     &#34;&#34;&#34;
     if x==&#34;?&#34; or (hasattr(col, &#34;isSym&#34;) and col.isSym):
         return x
-    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
     return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)
 
@@ -327,13 +326,12 @@ def showRule(rule):
 def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = float(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) and range[&#39;lo&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;lo&#39;]
-            hi = float(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) and range[&#39;hi&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;hi&#39;]
+            lo = range[&#39;lo&#39;]
+            hi = range[&#39;hi&#39;]
             at = int(range[&#39;at&#39;])
             x = row[at]
             if x == &#34;?&#34;:
                 return True
-            x = float(x) if x.isdigit() or x.replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo &lt;= x and x &lt; hi:
@@ -397,7 +395,6 @@ x - A value to be binned.</p>
     &#34;&#34;&#34;
     if x==&#34;?&#34; or (hasattr(col, &#34;isSym&#34;) and col.isSym):
         return x
-    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
     return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)</code></pre>
 </details>
@@ -700,13 +697,12 @@ are returned in a list.</p>
 <pre><code class="python">def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = float(range[&#39;lo&#39;]) if isinstance(range[&#39;lo&#39;], str) and range[&#39;lo&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;lo&#39;]
-            hi = float(range[&#39;hi&#39;]) if isinstance(range[&#39;hi&#39;], str) and range[&#39;hi&#39;].replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else range[&#39;hi&#39;]
+            lo = range[&#39;lo&#39;]
+            hi = range[&#39;hi&#39;]
             at = int(range[&#39;at&#39;])
             x = row[at]
             if x == &#34;?&#34;:
                 return True
-            x = float(x) if x.isdigit() or x.replace(&#34;.&#34;, &#34;&#34;).replace(&#34;-&#34;, &#34;&#34;).isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo &lt;= x and x &lt; hi:
