@@ -279,18 +279,23 @@ def xpln2(data, best, rest, doPrint = True):
             if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint, True)
     return rule, most
 
-def firstN(sortedRanges, scoreFun, doPrint = True):
+def firstN(sortedRanges, scoreFun, doPrint = True, useUseful2 = False):
     if doPrint:
         print(&#34;&#34;)
         for r in sortedRanges:
             print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
     first = sortedRanges[0][&#34;val&#34;]
     def useful(range):
-        if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
-            return range
+        if not useUseful2:
+            if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
+                return range
+        else:
+            # Only keep data in the top 50% of possible quality scores
+            if range[&#34;val&#34;] &gt; 0.5:
+                return range
 
     sortedRanges = list(filter(useful, sortedRanges))
     most, out = -1, None
@@ -471,7 +476,7 @@ the list may contain merged ranges of adjacent bins.</p></div>
 </details>
 </dd>
 <dt id="src.Discretization.firstN"><code class="name flex">
-<span>def <span class="ident">firstN</span></span>(<span>sortedRanges, scoreFun, doPrint=True)</span>
+<span>def <span class="ident">firstN</span></span>(<span>sortedRanges, scoreFun, doPrint=True, useUseful2=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -479,15 +484,20 @@ the list may contain merged ranges of adjacent bins.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def firstN(sortedRanges, scoreFun, doPrint = True):
+<pre><code class="python">def firstN(sortedRanges, scoreFun, doPrint = True, useUseful2 = False):
     if doPrint:
         print(&#34;&#34;)
         for r in sortedRanges:
             print(r[&#34;range&#34;].txt, r[&#34;range&#34;].lo, r[&#34;range&#34;].hi, round(r[&#34;val&#34;], 2), r[&#34;range&#34;].y.has)
     first = sortedRanges[0][&#34;val&#34;]
     def useful(range):
-        if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
-            return range
+        if not useUseful2:
+            if range[&#34;val&#34;] &gt; 0.05 and range[&#34;val&#34;] &gt; first / 10:
+                return range
+        else:
+            # Only keep data in the top 50% of possible quality scores
+            if range[&#34;val&#34;] &gt; 0.5:
+                return range
 
     sortedRanges = list(filter(useful, sortedRanges))
     most, out = -1, None
@@ -851,7 +861,7 @@ rest - all swayed data not in best</p>
             if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({&#34;range&#34;: range, &#34;max&#34;: len(ranges), &#34;val&#34;: v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint)
+    rule, most = firstN(sorted(tmp, key=lambda x: x[&#34;val&#34;], reverse=True), score, doPrint, True)
     return rule, most</code></pre>
 </details>
 </dd>
