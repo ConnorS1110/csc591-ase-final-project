@@ -3,6 +3,7 @@ import csv
 import json
 import math
 import os
+import time
 from data import DATA
 from update import *
 import query as query
@@ -253,7 +254,7 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
-    list_of_file_paths = ["../etc/data/auto2.csv"]
+    list_of_file_paths = ["../etc/data/nasa93dem.csv"]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, "../etc/out/script.out")
     with open(full_file_path, "w") as textFile:
@@ -264,9 +265,11 @@ def printTables():
         with open(full_file_path, "a") as textFile:
             textFile.write(f"File: {file_string}\n")
         print("Table 1:")
-        table1_dict = table1(file, full_file_path)
+        table1_dict, table1_xpln_timestamps = table1(file, full_file_path)
         print("Table 2:")
         table2(table1_dict, full_file_path)
+        print("Xpln Runtimes:")
+        xplnRuntimes(table1_xpln_timestamps, full_file_path)
         print("Sampling Taxes:")
         sampleTaxes(table1_dict, full_file_path)
         print("Explanation Taxes:")
@@ -283,6 +286,7 @@ def table1(filepath, full_file_path):
         col_headers.append(col.col.txt)
     table1_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
     table1_current_file_dict = {}
+    table1_xpln_timestamps = {}
     for row in row_headers:
         table1_current_row_stats = {}
         for i in range(1, 21):
@@ -303,20 +307,34 @@ def table1(filepath, full_file_path):
                 row_func = row
                 row_string = row.__name__
                 rule = None
+                startTime = 0
                 while (rule == None):
                     best, rest, _ = opt.sway1(data)
+                    startTime = time.time()
                     rule, _ = row_func(data, best, rest, False)
+                endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
+                if "xpln1" not in table1_xpln_timestamps:
+                    table1_xpln_timestamps["xpln1"] = endTime - startTime
+                else:
+                    table1_xpln_timestamps["xpln1"] += endTime - startTime
             elif (not isinstance(row, str) and row.__name__ == "xpln2"):
                 row_func = row
                 row_string = row.__name__
                 rule = None
+                startTime = 0
                 while (rule == None):
                     best, rest, _ = opt.sway2(data)
+                    startTime = time.time()
                     rule, _ = row_func(data, best, rest, False)
+                endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
+                if "xpln2" not in table1_xpln_timestamps:
+                    table1_xpln_timestamps["xpln2"] = endTime - startTime
+                else:
+                    table1_xpln_timestamps["xpln2"] += endTime - startTime
             # top option
             elif (isinstance(row, str) and row == "top"):
                 row_string = row
@@ -341,10 +359,12 @@ def table1(filepath, full_file_path):
                 table1_current_file_dict[row if isinstance(row, str) else row.__name__] = table1_current_row_stats
                 table1_string += f"{row_string:>30}{''.join(f'{round(v, 2):>20}' for v in table1_current_row_stats.values())}\n"
 
+    for key in table1_xpln_timestamps.keys():
+        table1_xpln_timestamps[key] /= 20
     print(table1_string)
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Table 1:\n" + table1_string + "\n")
-    return table1_current_file_dict
+    return table1_current_file_dict, table1_xpln_timestamps
 
 def table2(table1_dict, full_file_path):
     col_headers = []
@@ -372,6 +392,17 @@ def table2(table1_dict, full_file_path):
     print(table2_string)
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Table 2:\n" + table2_string + "\n")
+
+def xplnRuntimes(xpln_timestamps, full_file_path):
+    xplnRuntimes_string = ""
+    for key in xpln_timestamps:
+        row_string = key + ":"
+        time_string = str(round(xpln_timestamps[key] * 1000, 2)) + "ms"
+        xplnRuntimes_string += f"{row_string:>10}{''.join(f'{time_string:>20}')}\n"
+
+    print(xplnRuntimes_string)
+    with open(full_file_path, "a", encoding="utf-8") as file:
+        file.write("Xpln Runtimes:\n" + xplnRuntimes_string + "\n")
 
 def sampleTaxes(table1_dict, full_file_path):
     col_headers = []
