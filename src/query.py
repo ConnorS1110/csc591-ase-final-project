@@ -1,6 +1,8 @@
 from functools import cmp_to_key
 from list import *
 from utility import *
+from num import NUM
+from sym import SYM
 import utility as util
 import math
 import sys
@@ -146,18 +148,50 @@ def dist(data, t1, t2, cols=None, d=None, dist1=None):
         return abs(x - y)
 
     def dist1(col, x, y):
-        # Original
-        # if x == "?" and y == "?":
-        #     return 1
         if x == "?" or y == "?":
             return 1
-        return sym(x, y) if hasattr(col, "isSym") and col.isSym else num(norm(col,float(x)), norm(col, float(y)))
+        return sym(x, y) if hasattr(col, "isSym") and col.isSym else num(norm(col, x), norm(col, y))
 
     d, cols = 0, cols or data.cols.x
     for col in cols:
         d += dist1(col.col, t1[col.col.at], t2[col.col.at]) ** util.args.p
     return (d / len(cols)) ** (1 / util.args.p)
 
+def dist2(data, t1, t2, cols=None, d=None, dist1=None):
+    """
+    Function:
+        dist2
+    Description:
+        Finds normalized distance between row1 and row2
+    Input:
+        self - current DATA instance
+        t1 - First row
+        t2 - Second row
+        cols - cols to use as the data for distance
+    Output:
+        Normalized distance between row1 and row2
+    """
+    def sym(x, y):
+        return 0 if x == y else 1
+
+    def dist1(col, x, y):
+        # Make best guess for missing values by taking current average (or mode for syms)
+        if x == "?":
+            if (isinstance(col, NUM)):
+                x = sum(col.has) / col.n
+            else:
+                x = col.mode
+        if y == "?":
+            if (isinstance(col, NUM)):
+                y = sum(col.has) / col.n
+            else:
+                y = col.mode
+        return sym(x, y) if hasattr(col, "isSym") and col.isSym else abs(norm(col, x) - norm(col, y))
+
+    d, cols = 0, cols or data.cols.x
+    for col in cols:
+        d += dist1(col.col, t1[col.col.at], t2[col.col.at]) ** util.args.p
+    return (d / len(cols)) ** (1 / util.args.p)
 
 def better(data, row1, row2):
     """
@@ -174,8 +208,8 @@ def better(data, row1, row2):
     """
     s1, s2, ys = 0, 0, data.cols.y
     for col in ys:
-        x = norm(col.col, float(row1[col.col.at]) if row1[col.col.at] != "?" else row1[col.col.at])
-        y = norm(col.col, float(row2[col.col.at]) if row2[col.col.at] != "?" else row2[col.col.at])
+        x = norm(col.col, row1[col.col.at])
+        y = norm(col.col, row2[col.col.at])
 
         s1 -= math.exp(col.col.w * (x-y)/len(ys))
         s2 -= math.exp(col.col.w * (y - x)/len(ys))

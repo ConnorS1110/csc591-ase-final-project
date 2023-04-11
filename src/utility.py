@@ -134,10 +134,18 @@ def readCSV(sFilename, fun):
     Output:
         None
     """
+
+    # convert numerical values to floats as they appear
+    def is_float(s):
+        try:
+            return float(s)
+        except ValueError:
+            return s
+
     with open(sFilename, mode='r') as file:
         csvFile = csv.reader(file)
         for line in csvFile:
-            line = [value.strip() for value in line]
+            line = [is_float(value.strip()) for value in line]
             fun(line)
 
 def mean(col):
@@ -245,7 +253,7 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
-    # list_of_file_paths = ["../etc/data/auto2.csv"]
+    # list_of_file_paths = ["../etc/data/healthCloseIsses12mths0001-hard.csv"]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, "../etc/out/script.out")
     with open(full_file_path, "w") as textFile:

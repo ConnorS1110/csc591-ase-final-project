@@ -35,7 +35,6 @@ def add(col, x, n = None):
         if hasattr(col, "isSym") and col.isSym:
             sym(col.has)
         else:
-            x = float(x)
             num(col.has)
 
 def adds(col, t):

@@ -75,7 +75,6 @@ def bin(col, x):
     """
     if x=="?" or (hasattr(col, "isSym") and col.isSym):
         return x
-    x = float(x)
     tmp = (col.hi - col.lo)/(util.args.bins - 1)
     return 1 if col.hi == col.lo else int(math.floor(x / tmp + 0.5) * tmp)
 
@@ -299,13 +298,12 @@ def showRule(rule):
 def selects(rule, rows):
     def disjunction(ranges, row):
         for range in ranges:
-            lo = float(range['lo']) if isinstance(range['lo'], str) and range['lo'].replace(".", "").replace("-", "").isdigit() else range['lo']
-            hi = float(range['hi']) if isinstance(range['hi'], str) and range['hi'].replace(".", "").replace("-", "").isdigit() else range['hi']
+            lo = range['lo']
+            hi = range['hi']
             at = int(range['at'])
             x = row[at]
             if x == "?":
                 return True
-            x = float(x) if x.isdigit() or x.replace(".", "").replace("-", "").isdigit() else x
             if lo == hi and lo == x:
                 return True
             if lo <= x and x < hi:

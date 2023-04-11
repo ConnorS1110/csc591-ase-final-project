@@ -4,7 +4,7 @@ import utility as util
 
 
 
-def half(data, rows = None, cols = None, above = None):
+def half(data, rows = None, cols = None, above = None, useDist2 = False):
         """
         Function:
             half
@@ -24,7 +24,9 @@ def half(data, rows = None, cols = None, above = None):
             c - Distance between A and B
         """
         def gap(r1, r2):
-            return dist(data, r1, r2, cols)
+            if (not useDist2):
+                return dist(data, r1, r2, cols)
+            return dist2(data, r1, r2, cols)
         def cos(a, b, c):
             return (a**2 + c**2 - b**2)/((2 * c) + 1E-32)
         def proj(r):

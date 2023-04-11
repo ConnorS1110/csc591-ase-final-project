@@ -41,7 +41,7 @@ def sway2(data):
         if len(rows) <= len(data.rows) ** util.args.min:
             return rows, many(worse, util.args.rest*len(rows)), evals0
         else:
-            l , r, A, B, c, evals = half(data, rows, None, above)
+            l, r, A, B, c, evals = half(data, rows, None, above, True)
             if query.better(data, B, A):
                 l, r, A, B = r, l, B, A
             for row in r:
