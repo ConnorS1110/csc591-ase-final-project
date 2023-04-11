@@ -2,7 +2,7 @@ Sway 2 Ideas:
 (done) dist in query. If value is "?", currently distance is assumed to be 1. Maybe explore making a best guess prediction from current average.
 Change value for Far
 Change values for other parameters
-better uses B and A currently as reps for each half. Instead maybe find true center of each half and use those as reps instead.
+(done) better uses B and A currently as reps for each half. Instead maybe find true center of each half and use those as reps instead.
 
 
 Xpln 2 Ideas:

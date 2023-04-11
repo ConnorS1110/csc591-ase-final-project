@@ -251,18 +251,23 @@ def xpln2(data, best, rest, doPrint = True):
             if doPrint: print(range.txt, range.lo, range.hi)
             tmp.append({"range": range, "max": len(ranges), "val": v(range.y.has)})
 
-    rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score, doPrint)
+    rule, most = firstN(sorted(tmp, key=lambda x: x["val"], reverse=True), score, doPrint, True)
     return rule, most
 
-def firstN(sortedRanges, scoreFun, doPrint = True):
+def firstN(sortedRanges, scoreFun, doPrint = True, useUseful2 = False):
     if doPrint:
         print("")
         for r in sortedRanges:
             print(r["range"].txt, r["range"].lo, r["range"].hi, round(r["val"], 2), r["range"].y.has)
     first = sortedRanges[0]["val"]
     def useful(range):
-        if range["val"] > 0.05 and range["val"] > first / 10:
-            return range
+        if not useUseful2:
+            if range["val"] > 0.05 and range["val"] > first / 10:
+                return range
+        else:
+            # Only keep data in the top 50% of possible quality scores
+            if range["val"] > 0.5:
+                return range
 
     sortedRanges = list(filter(useful, sortedRanges))
     most, out = -1, None
