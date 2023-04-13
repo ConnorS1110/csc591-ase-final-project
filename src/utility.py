@@ -273,11 +273,11 @@ def printTables():
         with open(full_file_path, "a") as textFile:
             textFile.write(f"File: {file_string}\n")
         print("Table 1:")
-        table1_dict, table1_xpln_timestamps = table1(file, full_file_path)
+        table1_dict, table1_xpln_timestamps, xpln_runtimes = table1(file, full_file_path)
         print("Table 2:")
         table2(table1_dict, full_file_path)
         print("Xpln Runtimes:")
-        xplnRuntimes(table1_xpln_timestamps, full_file_path)
+        xplnRuntimes(table1_xpln_timestamps, full_file_path, xpln_runtimes)
         print("Sampling Taxes:")
         sampleTaxes(table1_dict, full_file_path)
         print("Explanation Taxes:")
@@ -298,6 +298,7 @@ def table1(filepath, full_file_path):
     table1_current_file_dict = {}
     table1_xpln_timestamps = {}
     clusters = {}
+    xpln_runtimes = {}
     for row in row_headers:
         obj_values = []
         table1_current_row_stats = {}
@@ -328,10 +329,15 @@ def table1(filepath, full_file_path):
                 endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
+                totalTime = endTime - startTime
                 if row_string not in table1_xpln_timestamps:
-                    table1_xpln_timestamps[row_string] = endTime - startTime
+                    table1_xpln_timestamps[row_string] = totalTime
                 else:
-                    table1_xpln_timestamps[row_string] += endTime - startTime
+                    table1_xpln_timestamps[row_string] += totalTime
+                if row_string not in xpln_runtimes:
+                    xpln_runtimes[row_string] = [totalTime]
+                else:
+                    xpln_runtimes[row_string].append(totalTime)
             elif (not isinstance(row, str) and row.__name__ == "xpln2"):
                 row_func = row
                 row_string = row.__name__
@@ -344,10 +350,15 @@ def table1(filepath, full_file_path):
                 endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
+                totalTime = endTime - startTime
                 if row_string not in table1_xpln_timestamps:
-                    table1_xpln_timestamps[row_string] = endTime - startTime
+                    table1_xpln_timestamps[row_string] = totalTime
                 else:
-                    table1_xpln_timestamps[row_string] += endTime - startTime
+                    table1_xpln_timestamps[row_string] += totalTime
+                if row_string not in xpln_runtimes:
+                    xpln_runtimes[row_string] = [totalTime]
+                else:
+                    xpln_runtimes[row_string].append(totalTime)
             # top option
             elif (isinstance(row, str) and row == "top"):
                 row_string = row
@@ -389,7 +400,7 @@ def table1(filepath, full_file_path):
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Table 1:\n" + table1_string + "\n")
         file.write(sk_string)
-    return table1_current_file_dict, table1_xpln_timestamps
+    return table1_current_file_dict, table1_xpln_timestamps, xpln_runtimes
 
 def table2(table1_dict, full_file_path):
     col_headers = []
@@ -418,7 +429,7 @@ def table2(table1_dict, full_file_path):
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Table 2:\n" + table2_string + "\n")
 
-def xplnRuntimes(xpln_timestamps, full_file_path):
+def xplnRuntimes(xpln_timestamps, full_file_path, xpln_runtimes):
     xplnRuntimes_string = ""
     for key in xpln_timestamps:
         row_string = key + ":"
@@ -426,8 +437,15 @@ def xplnRuntimes(xpln_timestamps, full_file_path):
         xplnRuntimes_string += f"{row_string:>10}{''.join(f'{time_string:>20}')}\n"
 
     print(xplnRuntimes_string)
+    sk_string = f"Scott-Knott for: xpln Runtimes\n"
+    rxs = [RX([list for list in xpln_runtimes[key]], key) for key in xpln_runtimes.keys()]
+    for rx in tiles(scottKnot(rxs)):
+        sk_string += f"{rx['rank']} {rx['name']} {rx['show']}\n"
+    sk_string += "\n"
+    print(sk_string)
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Xpln Runtimes:\n" + xplnRuntimes_string + "\n")
+        file.write(sk_string)
 
 def sampleTaxes(table1_dict, full_file_path):
     col_headers = []
@@ -604,6 +622,6 @@ def tiles(rxs):
         u[C - 1] = "*"
         rx["show"] = "".join(u) + " { %6.2f" % a
         for x in (b, c, d, e):
-            rx["show"] += ", %6.2f" % a
+            rx["show"] += ", %6.2f" % x
         rx["show"] += "  }"
     return rxs
