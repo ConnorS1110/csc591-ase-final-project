@@ -5,6 +5,9 @@ class NUM:
         self.n = 0
         self.lo = float('inf')
         self.hi = float('-inf')
+        self.mu = 0
+        self.m2 = 0
+        self.sd = 0
         self.ok = True
         self.has = []
         self.w = -1 if s.endswith("-") else 1

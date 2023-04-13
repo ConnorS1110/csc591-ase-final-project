@@ -5,6 +5,7 @@ import math
 import os
 import time
 from data import DATA
+from num import NUM
 from update import *
 import query as query
 import miscellaneous as misc
@@ -39,6 +40,7 @@ args = None
 Seed = 937162211
 egs = {}
 n = 0
+smallPositive = 1E-32
 
 def dofile(filename):
     with open(filename) as f:
@@ -120,6 +122,12 @@ def getCliArgs():
     parser.add_argument("-M", "--Max", type=int, default=512, required=False, help="numbers")
     parser.add_argument("-r", "--rest", type=int, default=4, required=False, help="how many of rest to sample")
     parser.add_argument("-R", "--Reuse", type=bool, default=False, required=False, help="child splits reuse a parent pole")
+    parser.add_argument("--bootstrap", type=int, default = 512, required=False)
+    parser.add_argument("--conf", type=float, default = 0.05, required=False)
+    parser.add_argument("--cliff", type=float, default = 0.4, required=False)
+    parser.add_argument("--cohen", type=float, default = 0.35, required=False)
+    parser.add_argument("--Fmt", type=str, default = "%6.2f", required=False)
+    parser.add_argument("--width", type=int, default = 40, required=False)
 
     args = parser.parse_args()
 
@@ -254,7 +262,7 @@ def printTables():
     list_of_file_paths = ["../etc/data/auto2.csv", "../etc/data/auto93.csv", "../etc/data/china.csv", "../etc/data/coc1000.csv",
                           "../etc/data/coc10000.csv", "../etc/data/healthCloseIsses12mths0001-hard.csv", "../etc/data/healthCloseIsses12mths0011-easy.csv",
                           "../etc/data/nasa93dem.csv", "../etc/data/pom.csv", "../etc/data/SSM.csv", "../etc/data/SSN.csv"]
-    list_of_file_paths = ["../etc/data/nasa93dem.csv"]
+    # list_of_file_paths = ["../etc/data/coc1000.csv"]
     script_dir = os.path.dirname(__file__)
     full_file_path = os.path.join(script_dir, "../etc/out/script.out")
     with open(full_file_path, "w") as textFile:
@@ -276,20 +284,25 @@ def printTables():
         xplnTaxes(table1_dict, full_file_path)
 
 def table1(filepath, full_file_path):
+    global Seed
+    ORIGINAL_SEED = Seed - 1
     script_dir = os.path.dirname(__file__)
     full_path = os.path.join(script_dir, filepath)
     data = DATA(full_path)
     row_headers = ["all", opt.sway1, disc.xpln1, opt.sway2, disc.xpln2, "top"]
-    # row_headers = ["all", opt.sway1, disc.xpln1, "top"]
+    max_row_header_len = max(len(s) if isinstance(s, str) else len(s.__name__) for s in row_headers)
     col_headers = []
     for col in data.cols.y:
         col_headers.append(col.col.txt)
     table1_string = f"{'':>30}{''.join(f'{h:>20}' for h in col_headers)}\n"
     table1_current_file_dict = {}
     table1_xpln_timestamps = {}
+    clusters = {}
     for row in row_headers:
+        obj_values = []
         table1_current_row_stats = {}
         for i in range(1, 21):
+            Seed = ORIGINAL_SEED + i
             data = DATA(full_path)
             # sway1 option
             if (not isinstance(row, str) and row.__name__ == "sway1"):
@@ -315,10 +328,10 @@ def table1(filepath, full_file_path):
                 endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
-                if "xpln1" not in table1_xpln_timestamps:
-                    table1_xpln_timestamps["xpln1"] = endTime - startTime
+                if row_string not in table1_xpln_timestamps:
+                    table1_xpln_timestamps[row_string] = endTime - startTime
                 else:
-                    table1_xpln_timestamps["xpln1"] += endTime - startTime
+                    table1_xpln_timestamps[row_string] += endTime - startTime
             elif (not isinstance(row, str) and row.__name__ == "xpln2"):
                 row_func = row
                 row_string = row.__name__
@@ -331,10 +344,10 @@ def table1(filepath, full_file_path):
                 endTime = time.time()
                 data1 = DATA(data, disc.selects(rule, data.rows))
                 data_for_stats = data1
-                if "xpln2" not in table1_xpln_timestamps:
-                    table1_xpln_timestamps["xpln2"] = endTime - startTime
+                if row_string not in table1_xpln_timestamps:
+                    table1_xpln_timestamps[row_string] = endTime - startTime
                 else:
-                    table1_xpln_timestamps["xpln2"] += endTime - startTime
+                    table1_xpln_timestamps[row_string] += endTime - startTime
             # top option
             elif (isinstance(row, str) and row == "top"):
                 row_string = row
@@ -353,17 +366,29 @@ def table1(filepath, full_file_path):
                 # Update the dictionary with the cumulative sum for each key
                 for key, value in current_stats.items():
                     table1_current_row_stats[key] += value
+            obj_values.append(list(current_stats.values()))
             if i == 20:
                 for key in table1_current_row_stats.keys():
                     table1_current_row_stats[key] /= i
                 table1_current_file_dict[row if isinstance(row, str) else row.__name__] = table1_current_row_stats
+                clusters[row_string] = obj_values
                 table1_string += f"{row_string:>30}{''.join(f'{round(v, 2):>20}' for v in table1_current_row_stats.values())}\n"
 
     for key in table1_xpln_timestamps.keys():
         table1_xpln_timestamps[key] /= 20
     print(table1_string)
+    sk_string = ""
+    for index, col in enumerate(data.cols.y):
+        sk_string += f"Scott-Knott for: {col.col.txt}\n"
+        rxs = [RX([list[index] for list in clusters[key]], key) for key in clusters.keys()]
+        for rx in tiles(scottKnot(rxs)):
+            spaces_str = " " * (max_row_header_len - len(rx['name']))
+            sk_string += f"{rx['rank']} {rx['name']} {spaces_str} {rx['show']}\n"
+        sk_string += "\n"
+    print(sk_string)
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Table 1:\n" + table1_string + "\n")
+        file.write(sk_string)
     return table1_current_file_dict, table1_xpln_timestamps
 
 def table2(table1_dict, full_file_path):
@@ -438,3 +463,147 @@ def xplnTaxes(table1_dict, full_file_path):
     print(xplnTaxes_string)
     with open(full_file_path, "a", encoding="utf-8") as file:
         file.write("Explanation Taxes:\n" + xplnTaxes_string + "\n")
+
+def scottKnot(rxs):
+    global args
+    def merges(i, j):
+        out = RX([], rxs[i]["name"])
+        for k in range(i, j + 1):
+            out = merge(out, rxs[j])
+        return out
+    def same(lo, cut, hi):
+        l = merges(lo, cut)
+        r = merges(cut + 1, hi)
+        return cliffsDelta(l["has"], r["has"]) and bootstrap(l["has"], r["has"])
+    def recurse(lo, hi, rank):
+        cut = None
+        b4 = merges(lo, hi)
+        best = 0
+        for j in range(lo, hi + 1):
+            if j < hi:
+                l = merges(lo, j)
+                r = merges(j + 1, hi)
+                now = (l["n"] * (mid(l) - mid(b4)) ** 2 + r["n"] * (mid(r) - mid(b4)) ** 2) / (l["n"] + r["n"])
+                if now > best:
+                    if abs(mid(l) - mid(r)) > cohen:
+                        cut, best = j, now
+        if cut and not same(lo, cut, hi):
+            rank = recurse(lo, cut, rank) + 1
+            rank  = recurse(cut + 1, hi, rank)
+        else:
+            for i in range(lo, hi + 1):
+                rxs[i]["rank"] = rank
+        return rank
+    rxs.sort(key=lambda x: mid(x))
+    cohen = div(merges(0, len(rxs) - 1)) * args.cohen
+    recurse(0, len(rxs) - 1, 1)
+    return rxs
+
+def merge(rx1, rx2):
+    rx3 = RX([], rx1["name"])
+    for t in (rx1["has"], rx2["has"]):
+        for x in t:
+            rx3["has"].append(x)
+    rx3["has"].sort()
+    rx3["n"] = len(rx3["has"])
+    return rx3
+
+def RX(t, s = None):
+    t.sort()
+    return {"name": s or "", "rank": 0, "n": len(t), "show": "", "has": t}
+
+def mid(t):
+    t = t["has"] if "has" in t else t
+    n = len(t) // 2
+    return len(t) % 2 == 0 and (t[n] + t[n + 1]) / 2 or t[n + 1]
+
+def div(t):
+    t = t["has"] if "has" in t else t
+    return (t[len(t) * 9 // 10] - t[len(t) * 1 // 10]) / 2.56
+
+def samples(t, n = None):
+    u = []
+    for i in range(n or len(t)):
+        u.append(random.choice(t))
+    return u
+
+def cliffsDelta(ns1, ns2):
+    """
+    Function:
+        cliffsDelta
+    Description:
+        Calculates Cliff's delta effect size measure
+    Input:
+        ns1 - first list of rows
+        ns2 - second list of rows
+    Output:
+        Whether the difference between the 2 lists of rows is great enough to be non-trivial
+    """
+    global args
+    n, gt, lt = 0, 0, 0
+    if len(ns1) > 128: ns1 = samples(ns1, 128)
+    if len(ns2) > 128: ns2 = samples(ns2, 128)
+    for x in ns1:
+        for y in ns2:
+            n += 1
+            if x > y: gt += 1
+            if x < y: lt += 1
+    return abs(lt - gt) / n <= args.cliff
+
+def add(i, x):
+    i.n += 1
+    d = x - i.mu
+    i.mu += d / i.n
+    i.m2 += d * (x - i.mu)
+    i.sd = 0 if i.n < 2 else math.sqrt(i.m2 / (i.n - 1))
+
+def delta(i, other):
+    global smallPositive
+    e, y, z = smallPositive, i, other
+    return abs(y.mu - z.mu) / (math.sqrt(e + y.sd ** 2 / e + y.n + z.sd ** 2 / (z.n + e)))
+
+def bootstrap(y0, z0):
+    global args
+    x, y, z, yhat, zhat = NUM(), NUM(), NUM(), [], []
+    for y1 in y0:
+        add(x, y1)
+        add(y, y1)
+    for z1 in z0:
+        add(x, z1)
+        add(z, z1)
+    xmu, ymu, zmu = x.mu, y.mu, z.mu
+    for y1 in y0: yhat.append(y1 - ymu + xmu)
+    for z1 in z0: zhat.append(z1 - zmu + xmu)
+    tobs = delta(y, z)
+    n = 0
+    for i in range(args.bootstrap):
+        if (delta(NUM(samples(yhat)), NUM(samples(zhat))) > tobs):
+            n += 1
+    return n / args.bootstrap > args.conf
+
+def tiles(rxs):
+    global smallPositive, args
+    huge, minF, maxF, floor = float("inf"), min, max, math.floor
+    lo, hi = huge, -huge
+    for rx in rxs:
+        lo, hi = minF(lo, rx["has"][0]), maxF(hi, rx["has"][-1])
+    for rx in rxs:
+        t, u = rx["has"], []
+        def of(x, most): return max(1, minF(most, x))
+        def at(x):
+            return t[of(int(len(t) * x), len(t) - 1)]
+        def pos(x): return floor(of(args.width * (x - lo) / (hi - lo + smallPositive) // 1, args.width))
+        for _ in range(args.width): u.append(" ")
+        a, b, c, d, e= at(.1), at(.3), at(.5), at(.7), at(.9)
+        A, B, C, D, E= pos(a), pos(b), pos(c), pos(d), pos(e)
+        for i in range(A, B):
+            u[i - 1] = "-"
+        for i in range(D, E):
+            u[i - 1] = "-"
+        u[(args.width // 2) - 1] = "|"
+        u[C - 1] = "*"
+        rx["show"] = "".join(u) + " { %6.2f" % a
+        for x in (b, c, d, e):
+            rx["show"] += ", %6.2f" % a
+        rx["show"] += "  }"
+    return rxs
