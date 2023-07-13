@@ -13,8 +13,6 @@ Please note that the lack of a license, and per GitHub's guidelines [here](https
 
 Simply run `main.py` and wait for algorithms to be run on all the datasets.
 
-## Team Members
+## Team Member
 
 - Connor Smith (Unity ID: cpsmith6)
-- Ashvin Gaonkar (Unity ID: agaonka2)
-- Liwen "Cynthia" Du (Unity ID: ldu2)
